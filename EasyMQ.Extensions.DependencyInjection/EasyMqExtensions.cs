@@ -35,8 +35,8 @@ public static class EasyMqExtensions
         where THandler: class, IEventHandler<TEvent>
     {
         services.AddTransient<IEventHandler<TEvent>, THandler>();
-        services.AddSingleton<EventConsumer<TEvent>>();
-        services.AddHostedService<ConsumerEventHost<EventConsumer<TEvent>>>();
+        services.AddSingleton<AsyncEventConsumer<TEvent>>();
+        services.AddHostedService<ConsumerEventHost<AsyncEventConsumer<TEvent>>>();
         return services;
     }
 }

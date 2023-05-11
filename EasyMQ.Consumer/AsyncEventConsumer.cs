@@ -5,13 +5,13 @@ using Microsoft.Extensions.Options;
 
 namespace EasyMQ.Consumers;
 
-public sealed class EventConsumer<TEvent>: IMessageConsumer
+public sealed class AsyncEventConsumer<TEvent>: IMessageConsumer
     where TEvent: class, IEvent, new()
 {
     private readonly IEventHandler<TEvent> _eventHandler;
     private readonly IOptions<List<ConsumerConfiguration>> _consumerConfiguration;
 
-    public EventConsumer(IEventHandler<TEvent> eventHandler,
+    public AsyncEventConsumer(IEventHandler<TEvent> eventHandler,
         IOptions<List<ConsumerConfiguration>> consumerConfiguration)
     {
         _eventHandler = eventHandler;

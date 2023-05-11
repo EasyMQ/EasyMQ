@@ -16,7 +16,7 @@ public class EventConsumerTests
 {
     private readonly IEventHandler<TestEvent> _eventHandler;
     private readonly IOptions<List<ConsumerConfiguration>> _consumerConfigs;
-    private readonly EventConsumer<TestEvent> _consumer;
+    private readonly AsyncEventConsumer<TestEvent> _consumer;
 
     public class TestEvent : IEvent
     {
@@ -33,7 +33,7 @@ public class EventConsumerTests
                 EventType = "TestEvent",
             }
         });
-        _consumer = new EventConsumer<TestEvent>(_eventHandler, _consumerConfigs);
+        _consumer = new AsyncEventConsumer<TestEvent>(_eventHandler, _consumerConfigs);
     }
 
     [Fact]

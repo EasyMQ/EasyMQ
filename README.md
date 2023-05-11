@@ -24,7 +24,7 @@ Each domain event needs to be configured in a consumer section defined by the cl
   ]
 }
 ```
-With the configuration above, an event consumer of type `EventConsumer<EasyMqEvent>` with message type of `EasyMqEvent` will be spawned with the given queue and exchange configuration.
+With the configuration above, an event consumer of type `AsyncEventConsumer<EasyMqEvent>` with message type of `EasyMqEvent` will be spawned with the given queue and exchange configuration.
 The corresponding code for the event handler is as follows: -
 
 ```csharp
