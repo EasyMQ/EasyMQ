@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.Abstractions", "EasyMQ.Abstractions\EasyMQ.Abstractions.csproj", "{ADB6AFB6-0C8A-4E4E-9170-67E2B67E93F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.EventHost", "EasyMQ.EventHost\EasyMQ.EventHost.csproj", "{BC1EC765-E946-446D-A73C-9C4DF48A346A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.Consumer", "EasyMQ.Consumer\EasyMQ.Consumer.csproj", "{9E0B44FC-3E43-4D37-868C-1E9CC9E271DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.Extensions.DependencyInjection", "EasyMQ.Extensions.DependencyInjection\EasyMQ.Extensions.DependencyInjection.csproj", "{C107CCA7-93F9-425C-BC33-46C40031AB0E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DB647DCC-D158-448B-90BD-0EB00DFEEB4E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADB6AFB6-0C8A-4E4E-9170-67E2B67E93F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADB6AFB6-0C8A-4E4E-9170-67E2B67E93F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADB6AFB6-0C8A-4E4E-9170-67E2B67E93F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADB6AFB6-0C8A-4E4E-9170-67E2B67E93F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC1EC765-E946-446D-A73C-9C4DF48A346A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC1EC765-E946-446D-A73C-9C4DF48A346A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC1EC765-E946-446D-A73C-9C4DF48A346A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC1EC765-E946-446D-A73C-9C4DF48A346A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E0B44FC-3E43-4D37-868C-1E9CC9E271DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E0B44FC-3E43-4D37-868C-1E9CC9E271DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E0B44FC-3E43-4D37-868C-1E9CC9E271DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E0B44FC-3E43-4D37-868C-1E9CC9E271DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C107CCA7-93F9-425C-BC33-46C40031AB0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C107CCA7-93F9-425C-BC33-46C40031AB0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C107CCA7-93F9-425C-BC33-46C40031AB0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C107CCA7-93F9-425C-BC33-46C40031AB0E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
