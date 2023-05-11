@@ -29,5 +29,4 @@ public class MessageContext
 
 public interface IEvent
 {
-    MessageContext Context { get; set; }
 }

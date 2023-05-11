@@ -8,7 +8,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.Consumer", "EasyMQ.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.Extensions.DependencyInjection", "EasyMQ.Extensions.DependencyInjection\EasyMQ.Extensions.DependencyInjection.csproj", "{C107CCA7-93F9-425C-BC33-46C40031AB0E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DB647DCC-D158-448B-90BD-0EB00DFEEB4E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4308B068-6EA3-415A-B68C-CC342D011036}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.Consumer.Tests", "tests\EasyMQ.Consumer.Tests\EasyMQ.Consumer.Tests.csproj", "{E3122BD6-324F-4B87-87FF-2B2C1738EFA1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{482CEC83-8BCD-4402-BF86-D805ABA0FF51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.Console", "samples\EasyMQ.Console\EasyMQ.Console.csproj", "{2119D4D2-8BBF-4508-B878-F9BB8D0A23DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,5 +38,17 @@ Global
 		{C107CCA7-93F9-425C-BC33-46C40031AB0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C107CCA7-93F9-425C-BC33-46C40031AB0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C107CCA7-93F9-425C-BC33-46C40031AB0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3122BD6-324F-4B87-87FF-2B2C1738EFA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3122BD6-324F-4B87-87FF-2B2C1738EFA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3122BD6-324F-4B87-87FF-2B2C1738EFA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3122BD6-324F-4B87-87FF-2B2C1738EFA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2119D4D2-8BBF-4508-B878-F9BB8D0A23DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2119D4D2-8BBF-4508-B878-F9BB8D0A23DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2119D4D2-8BBF-4508-B878-F9BB8D0A23DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2119D4D2-8BBF-4508-B878-F9BB8D0A23DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E3122BD6-324F-4B87-87FF-2B2C1738EFA1} = {4308B068-6EA3-415A-B68C-CC342D011036}
+		{2119D4D2-8BBF-4508-B878-F9BB8D0A23DC} = {482CEC83-8BCD-4402-BF86-D805ABA0FF51}
 	EndGlobalSection
 EndGlobal

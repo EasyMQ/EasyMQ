@@ -1,26 +1,25 @@
-﻿using EasyMQ.Abstractions;
+﻿using System.Text.Json;
+using EasyMQ.Abstractions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace EasyMQ.Consumers;
 
 public sealed class EventConsumer<TEvent>: IMessageConsumer
     where TEvent: class, IEvent, new()
 {
-    private readonly IConfiguration _configuration;
     private readonly IEventHandler<TEvent> _eventHandler;
-    private readonly string _configSection;
+    private readonly IOptions<List<ConsumerConfiguration>> _consumerConfiguration;
 
-    public EventConsumer(IConfiguration configuration,
-        IEventHandler<TEvent> eventHandler,
-        Func<string> configSectionFactory)
+    public EventConsumer(IEventHandler<TEvent> eventHandler,
+        IOptions<List<ConsumerConfiguration>> consumerConfiguration)
     {
-        _configuration = configuration;
         _eventHandler = eventHandler;
-        _configSection = configSectionFactory();
+        _consumerConfiguration = consumerConfiguration;
     }
     public ConsumerQueueAndExchangeConfiguration GetQueueAndExchangeConfiguration()
     {
-        var rabbitConfig = _configuration.GetSection(_configSection).Get<List<ConsumerConfiguration>>();
+        var rabbitConfig = _consumerConfiguration.Value;
         var config = rabbitConfig.FirstOrDefault(
             c =>
                 c.EventType.Equals(typeof(TEvent).Name));
@@ -43,10 +42,7 @@ public sealed class EventConsumer<TEvent>: IMessageConsumer
 
     public async Task Consume(MessageContext context)
     {
-        var newEvent = new TEvent
-        {
-            Context = context
-        };
-        await _eventHandler.Handle(newEvent);
+        var newEvent = JsonSerializer.Deserialize<TEvent>(context.Body.AsSpan(0, context.BodySize));
+        await _eventHandler.Handle(context, newEvent);
     }
 }
