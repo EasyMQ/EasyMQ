@@ -1,5 +1,5 @@
 ## easyMQ
-A dead simple library which aims to simplify writing RabbitMQ code in .net core.
+A dead simple library which aims to simplify writing [RabbitMQ](https://www.rabbitmq.com/) code in [.NET Core](https://learn.microsoft.com/en-us/dotnet/core/introduction).
 
 No need to manually write consumers or manage connections and channels. Each domain event gets its own channel and `IHostedService` which will consume events using RabbitMQ's `AsyncEventingBasicConsumer`.
 Each domain event needs to be configured in a consumer section defined by the client application. Here is an example from one of the samples below: -
