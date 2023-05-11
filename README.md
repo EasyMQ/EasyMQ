@@ -69,7 +69,12 @@ await Host.CreateDefaultBuilder(args)
     .RunConsoleAsync();
 ```
 ### Pending Action Items
-- [x] Consumer capabilities
+- [ ] Consumer capabilities
+  - [x] Consume from Topic Exchanges
+  - [x] Consume from Header Exchanges
+  - [x] Consume from Fanout Exchanges
+  - [ ] Consume from Direct Exchanges
+  - [ ] Consume from Default Exchange 
 - [ ] Producer capabilities
 - [ ] Tracing
 - [ ] Error queues and exception flows
