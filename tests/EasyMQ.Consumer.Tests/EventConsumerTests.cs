@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using EasyMQ.Abstractions;
 using EasyMQ.Consumers;
@@ -18,7 +20,7 @@ public class EventConsumerTests
 
     public class TestEvent : IEvent
     {
-        public MessageContext Context { get; set; }
+        public string EventName { get; set; }
     }
 
     public EventConsumerTests()
@@ -43,7 +45,9 @@ public class EventConsumerTests
     [Fact]
     public async Task GivenANewMessageContext_HandlerShouldBeInvoked()
     {
-        await _consumer.Consume(new MessageContext(null, null, 0, 0, null, null, false));
+        var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new TestEvent()));
+        await _consumer.Consume(new MessageContext(body,
+            null, (ushort) body.Length, 0, null, null, false));
 
         await _eventHandler.Received(1).Handle(Arg.Any<MessageContext>(),Arg.Any<TestEvent>());
     } 
