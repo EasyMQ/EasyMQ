@@ -68,12 +68,11 @@ await Host.CreateDefaultBuilder(args)
     })
     .RunConsoleAsync();
 ```
-
-
-
-
-
-
+### Pending Action Items
+- [x] Consumer capabilities
+- [ ] Producer capabilities
+- [ ] Tracing
+- [ ] Error queues and exception flows
 
 
 
