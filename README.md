@@ -78,7 +78,7 @@ On the producer side
                         RoutingKey = "test"
                     });
 ```
-In startup, calling the two extension methods `AddEasyMqConsumer` and `AddEventConsumer` is all it takes to configure the event handlers.
+In startup, calling the two extension methods `AddEasyMq`, `AddEventConsumer` and `AddEventProducer` is all it takes to configure the event handlers.
 
 ```csharp
 await Host.CreateDefaultBuilder(args)
@@ -93,7 +93,8 @@ await Host.CreateDefaultBuilder(args)
                 factory.AutomaticRecoveryEnabled = true;
                 return factory;
             }, context.Configuration, "RabbitConsumerConfigurations")
-            .AddEventConsumer<EasyMqEvent, EasyMqEventHandler>();
+            .AddEventConsumer<EasyMqEvent, EasyMqEventHandler>()
+            .AddEventProducer<EasyMqEvent>();
     })
     .RunConsoleAsync();
 ```
