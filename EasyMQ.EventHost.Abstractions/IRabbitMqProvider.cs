@@ -1,4 +1,4 @@
-namespace EasyMQ.Consumer.Interfaces;
+namespace EasyMQ.EventHost.Abstractions;
 
 public interface IRabbitMqProvider
 {

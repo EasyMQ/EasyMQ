@@ -1,6 +1,6 @@
 namespace EasyMQ.Abstractions;
 
-public class MessageContext
+public class ReceiverContext
 {
     public byte[] Body { get; private set; }
     public string RoutingKey { get; private set; }
@@ -9,7 +9,7 @@ public class MessageContext
     public string Exchange { get; private set; }
     public string ConsumerTag { get; private set; }
     public bool Redelivered { get; private set; }
-    public MessageContext(byte[] body, 
+    public ReceiverContext(byte[] body, 
         string routingKey, 
         ushort bodySize,
         ulong deliveryTag,

@@ -16,6 +16,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EasyMQ.Abstractions\EasyMQ.Abstractions.csproj" />
+      <ProjectReference Include="..\EasyMQ.EventHost.Abstractions\EasyMQ.EventHost.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Interfaces\" />
     </ItemGroup>
 
 </Project>

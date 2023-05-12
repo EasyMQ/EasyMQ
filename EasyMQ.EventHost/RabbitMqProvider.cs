@@ -1,8 +1,9 @@
+using EasyMQ.EventHost.Abstractions;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 
-namespace EasyMQ.Consumer.Interfaces;
+namespace EasyMQ.Consumer;
 
 public class RabbitMqProvider : IRabbitMqProvider, IConnectionProvider
 {
