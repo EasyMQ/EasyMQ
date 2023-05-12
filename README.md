@@ -30,11 +30,6 @@ With the configuration above, an event consumer of type `AsyncEventConsumer<Easy
 The corresponding code for the event handler is as follows: -
 
 ```csharp
-public class EasyMqEvent : IEvent
-{
-    public string EventName { get; set; }
-}
-
 public class EasyMqEventHandler : IEventHandler<EasyMqEvent>
 {
     private readonly ILogger<EasyMqEventHandler> _logger;
@@ -42,6 +37,12 @@ public class EasyMqEventHandler : IEventHandler<EasyMqEvent>
     public EasyMqEventHandler(ILogger<EasyMqEventHandler> logger)
     {
         _logger = logger;
+    }
+
+    public Task BeforeHandle(MessageContext messageContext)
+    {
+        _logger.LogInformation("Optionally implementing the Before hook, to do preprocessing");
+        return Task.CompletedTask;
     }
     public Task Handle(MessageContext messageContext, EasyMqEvent @event)
     {
