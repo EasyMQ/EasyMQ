@@ -1,7 +1,8 @@
 ﻿using System.Buffers;
 using System.Collections.Concurrent;
 using EasyMQ.Abstractions;
-using EasyMQ.Consumer.Interfaces;
+using EasyMQ.Abstractions.Consumer;
+using EasyMQ.EventHost.Abstractions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -12,11 +13,11 @@ using RabbitMQ.Client.Exceptions;
 namespace EasyMQ.Consumer;
 
 /// <summary>
-/// Bootstraps a consumer of type <see cref="IMessageConsumer"/>
+/// Bootstraps a consumer of type <see cref="IEventConsumer"/>
 /// </summary>
 /// <typeparam name="TConsumer"></typeparam>
 public sealed class ConsumerEventHost<TConsumer> : IHostedService
-    where TConsumer: IMessageConsumer
+    where TConsumer: IEventConsumer
 {
     private readonly TConsumer _consumer;
     private readonly IConnectionProvider _provider;
@@ -88,7 +89,7 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
                     {
                         try
                         {
-                            await _consumer.Consume(new MessageContext(
+                            await _consumer.Consume(new ReceiverContext(
                                 rentedMemory,
                                 args.RoutingKey,
                                 (ushort) args.Body.Length,

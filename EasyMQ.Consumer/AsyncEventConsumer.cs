@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
 using EasyMQ.Abstractions;
+using EasyMQ.Abstractions.Consumer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace EasyMQ.Consumers;
 
-public sealed class AsyncEventConsumer<TEvent>: IMessageConsumer
+public sealed class AsyncEventConsumer<TEvent>: IEventConsumer
     where TEvent: class, IEvent, new()
 {
     private readonly IEventHandler<TEvent> _eventHandler;
@@ -40,7 +41,7 @@ public sealed class AsyncEventConsumer<TEvent>: IMessageConsumer
         };
     }
 
-    public async Task Consume(MessageContext context)
+    public async Task Consume(ReceiverContext context)
     {
         var newEvent = JsonSerializer.Deserialize<TEvent>(context.Body.AsSpan(0, context.BodySize));
         await _eventHandler.BeforeHandle(context);

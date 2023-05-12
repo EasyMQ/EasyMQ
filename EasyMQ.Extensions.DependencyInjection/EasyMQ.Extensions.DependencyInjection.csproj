@@ -16,7 +16,9 @@
     <ItemGroup>
       <ProjectReference Include="..\EasyMQ.Abstractions\EasyMQ.Abstractions.csproj" />
       <ProjectReference Include="..\EasyMQ.Consumer\EasyMQ.Consumer.csproj" />
+      <ProjectReference Include="..\EasyMQ.EventHost.Abstractions\EasyMQ.EventHost.Abstractions.csproj" />
       <ProjectReference Include="..\EasyMQ.EventHost\EasyMQ.EventHost.csproj" />
+      <ProjectReference Include="..\EasyMQ.Publisher\EasyMQ.Publisher.csproj" />
     </ItemGroup>
 
 </Project>

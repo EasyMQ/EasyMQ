@@ -1,4 +1,4 @@
-namespace EasyMQ.Abstractions;
+namespace EasyMQ.Abstractions.Consumer;
 
 public class ConsumerConfiguration
 {

@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EasyMQ.Abstractions;
+using EasyMQ.Abstractions.Consumer;
 using EasyMQ.Consumers;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
@@ -46,11 +47,11 @@ public class EventConsumerTests
     public async Task GivenANewMessageContext_HandlerShouldBeInvoked()
     {
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new TestEvent()));
-        await _consumer.Consume(new MessageContext(body,
+        await _consumer.Consume(new ReceiverContext(body,
             null, (ushort) body.Length, 0, null, null, false));
 
-        await _eventHandler.Received(1).BeforeHandle(Arg.Any<MessageContext>());
-        await _eventHandler.Received(1).Handle(Arg.Any<MessageContext>(),Arg.Any<TestEvent>());
-        await _eventHandler.Received(1).PostHandle(Arg.Any<MessageContext>());
+        await _eventHandler.Received(1).BeforeHandle(Arg.Any<ReceiverContext>());
+        await _eventHandler.Received(1).Handle(Arg.Any<ReceiverContext>(),Arg.Any<TestEvent>());
+        await _eventHandler.Received(1).PostHandle(Arg.Any<ReceiverContext>());
     } 
 }
