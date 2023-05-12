@@ -49,6 +49,8 @@ public class EventConsumerTests
         await _consumer.Consume(new MessageContext(body,
             null, (ushort) body.Length, 0, null, null, false));
 
+        await _eventHandler.Received(1).BeforeHandle(Arg.Any<MessageContext>());
         await _eventHandler.Received(1).Handle(Arg.Any<MessageContext>(),Arg.Any<TestEvent>());
+        await _eventHandler.Received(1).PostHandle(Arg.Any<MessageContext>());
     } 
 }

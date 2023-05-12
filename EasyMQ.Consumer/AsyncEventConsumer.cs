@@ -43,6 +43,8 @@ public sealed class AsyncEventConsumer<TEvent>: IMessageConsumer
     public async Task Consume(MessageContext context)
     {
         var newEvent = JsonSerializer.Deserialize<TEvent>(context.Body.AsSpan(0, context.BodySize));
+        await _eventHandler.BeforeHandle(context);
         await _eventHandler.Handle(context, newEvent);
+        await _eventHandler.PostHandle(context);
     }
 }
