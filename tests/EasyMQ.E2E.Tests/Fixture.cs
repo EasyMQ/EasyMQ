@@ -16,9 +16,10 @@ public class Fixture
 
     public Fixture()
     {
-        var services = new ServiceCollection() as IServiceCollection;
-        var configBuilder = new ConfigurationBuilder() as IConfigurationBuilder;
+        var services = new ServiceCollection();
+        var configBuilder = new ConfigurationBuilder();
         configBuilder
+            .AddEnvironmentVariables()
             .AddJsonFile("appsettings.json", false)
             .AddUserSecrets<EndToEndTests>();
         AddConfigurationSources(configBuilder);
