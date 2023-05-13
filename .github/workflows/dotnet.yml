@@ -13,7 +13,11 @@ jobs:
   build-and-test:
 
     runs-on: ubuntu-latest
-
+    services:
+      rabbitmq:
+        image: "rabbitmq:3-management"
+        ports:
+        - 5672:5672
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -26,3 +30,6 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      env:
+        rmq_username: guest
+        rmq_password: guest
