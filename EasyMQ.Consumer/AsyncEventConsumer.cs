@@ -9,13 +9,13 @@ namespace EasyMQ.Consumers;
 public sealed class AsyncEventConsumer<TEvent>: IEventConsumer
     where TEvent: class, IEvent, new()
 {
-    private readonly IEventHandler<TEvent> _eventHandler;
+    private readonly Func<IEventHandler<TEvent>> _handlerFactory;
     private readonly IOptions<List<ConsumerConfiguration>> _consumerConfiguration;
 
-    public AsyncEventConsumer(IEventHandler<TEvent> eventHandler,
+    public AsyncEventConsumer(Func<IEventHandler<TEvent>> handlerFactory,
         IOptions<List<ConsumerConfiguration>> consumerConfiguration)
     {
-        _eventHandler = eventHandler;
+        _handlerFactory = handlerFactory;
         _consumerConfiguration = consumerConfiguration;
     }
     public ConsumerQueueAndExchangeConfiguration GetQueueAndExchangeConfiguration()
@@ -43,9 +43,10 @@ public sealed class AsyncEventConsumer<TEvent>: IEventConsumer
 
     public async Task Consume(ReceiverContext context)
     {
+        var eventHandler = _handlerFactory();
         var newEvent = JsonSerializer.Deserialize<TEvent>(context.Body.AsSpan(0, context.BodySize));
-        await _eventHandler.BeforeHandle(context);
-        await _eventHandler.Handle(context, newEvent);
-        await _eventHandler.PostHandle(context);
+        await eventHandler.BeforeHandle(context);
+        await eventHandler.Handle(context, newEvent);
+        await eventHandler.PostHandle(context);
     }
 }

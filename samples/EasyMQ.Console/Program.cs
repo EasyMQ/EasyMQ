@@ -7,17 +7,26 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 await Host.CreateDefaultBuilder(args)
-    .ConfigureHostConfiguration(configurationBuilder => configurationBuilder.AddJsonFile("appsettings.json", false, true))
+    .ConfigureHostConfiguration(configurationBuilder => configurationBuilder
+        .AddJsonFile("appsettings.json", false, true)
+        .AddUserSecrets<Program>())
     .ConfigureServices((context, services) =>
     {
-        services.AddEasyMq(factory =>
+        services.AddEasyMq(context.Configuration, builder =>
             {
-                factory.Uri = new Uri("amqp://localhost:5672/");
-                factory.DispatchConsumersAsync = true;
-                factory.TopologyRecoveryEnabled = true;
-                factory.AutomaticRecoveryEnabled = true;
-                return factory;
-            }, context.Configuration, "RabbitConsumerConfigurations", "RabbitProducerConfigurations")
+                builder.WithConnectionFactory(factory =>
+                {
+                    factory.Uri =
+                        new Uri(
+                            $"amqp://{context.Configuration["rmq_username"]}:{context.Configuration["rmq_password"]}@localhost:5672/");
+                    factory.DispatchConsumersAsync = true;
+                    factory.TopologyRecoveryEnabled = true;
+                    factory.AutomaticRecoveryEnabled = true;
+                    return factory;
+                });
+                builder.WithConsumerSection("RabbitConsumerConfigurations");
+                builder.WithProducerSection("RabbitProducerConfigurations");
+            })
             .AddEventConsumer<EasyMqEvent, EasyMqEventHandler>()
             .AddEventProducer<EasyMqEvent>();
         services.AddHostedService<EasyMqTimedProducerService>();

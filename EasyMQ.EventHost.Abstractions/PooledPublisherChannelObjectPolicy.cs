@@ -3,7 +3,7 @@ using RabbitMQ.Client;
 
 namespace EasyMQ.EventHost.Abstractions;
 
-public class PooledPublisherChannelObjectPolicy : IPooledObjectPolicy<IModel>
+public sealed class PooledPublisherChannelObjectPolicy : IPooledObjectPolicy<IModel>
 {
     private readonly IConnection _connection;
 

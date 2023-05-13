@@ -15,17 +15,17 @@ namespace EasyMQ.Extensions.DependencyInjection;
 
 public static class EasyMqExtensions
 {
-    public static IServiceCollection AddEasyMq(this IServiceCollection services, 
-        Func<ConnectionFactory, IConnectionFactory> rmqConnectionFactory, 
-        IConfiguration configuration, 
-        string? consumerSection = null,
-        string? producerSection = null)
+    public static IServiceCollection AddEasyMq(this IServiceCollection services,
+        IConfiguration configuration,
+        Action<EasyMqConfigurationBuilder> setup)
     {
-        _ = consumerSection != null
-            ? services.Configure<List<ConsumerConfiguration>>(configuration.GetSection(consumerSection))
+        var builder = new EasyMqConfigurationBuilder();
+        setup(builder);
+        _ = builder.GetConsumerSection() != string.Empty
+            ? services.Configure<List<ConsumerConfiguration>>(configuration.GetSection(builder.GetConsumerSection()))
             : null;
-        _ = producerSection != null
-            ? services.Configure<List<RabbitProducerConfiguration>>(configuration.GetSection(producerSection))
+        _ = builder.GetProducerSection() != string.Empty
+            ? services.Configure<List<RabbitProducerConfiguration>>(configuration.GetSection(builder.GetProducerSection()))
             : null;
         
         services.TryAddSingleton<RabbitMqProvider>();
@@ -38,8 +38,8 @@ public static class EasyMqExtensions
         services.TryAddSingleton<IRabbitMqProvider>(sp => sp.GetRequiredService<RabbitMqProvider>());
         services.TryAddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
         services.AddSingleton<IPooledObjectPolicy<IModel>, PooledPublisherChannelObjectPolicy>();
-        _ = rmqConnectionFactory ?? throw new ArgumentNullException($"{nameof(rmqConnectionFactory)} cannot be null");
-        var connectionFactory = rmqConnectionFactory(new ConnectionFactory());
+        _ = builder.GetFactory ?? throw new ArgumentNullException($"{nameof(builder.GetFactory)} cannot be null");
+        var connectionFactory = builder.GetFactory(new ConnectionFactory());
         services.AddSingleton(connectionFactory);
         return services;
     }
@@ -48,6 +48,7 @@ public static class EasyMqExtensions
         where THandler: class, IEventHandler<TEvent>
     {
         services.AddTransient<IEventHandler<TEvent>, THandler>();
+        services.AddTransient<Func<IEventHandler<TEvent>>>(sp => sp.GetRequiredService<IEventHandler<TEvent>>);
         services.AddSingleton<AsyncEventConsumer<TEvent>>();
         services.AddHostedService<ConsumerEventHost<AsyncEventConsumer<TEvent>>>();
         return services;

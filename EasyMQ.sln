@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.Publisher", "EasyMQ.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.EventHost.Abstractions", "EasyMQ.EventHost.Abstractions\EasyMQ.EventHost.Abstractions.csproj", "{367DECF3-4BD6-496E-977A-5454FE497522}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.E2E.Tests", "tests\EasyMQ.E2E.Tests\EasyMQ.E2E.Tests.csproj", "{1582DA3D-AB78-4025-A874-8B37FEC23BB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,9 +60,14 @@ Global
 		{367DECF3-4BD6-496E-977A-5454FE497522}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{367DECF3-4BD6-496E-977A-5454FE497522}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{367DECF3-4BD6-496E-977A-5454FE497522}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1582DA3D-AB78-4025-A874-8B37FEC23BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1582DA3D-AB78-4025-A874-8B37FEC23BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1582DA3D-AB78-4025-A874-8B37FEC23BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1582DA3D-AB78-4025-A874-8B37FEC23BB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E3122BD6-324F-4B87-87FF-2B2C1738EFA1} = {4308B068-6EA3-415A-B68C-CC342D011036}
 		{2119D4D2-8BBF-4508-B878-F9BB8D0A23DC} = {482CEC83-8BCD-4402-BF86-D805ABA0FF51}
+		{1582DA3D-AB78-4025-A874-8B37FEC23BB7} = {4308B068-6EA3-415A-B68C-CC342D011036}
 	EndGlobalSection
 EndGlobal

@@ -67,32 +67,41 @@ public class EasyMqEventHandler : IEventHandler<EasyMqEvent>
 On the producer side
 ```csharp
     
-    private readonly IEventPublisher<EasyMqEvent> _eventPublisher;
-    
-    await _eventPublisher.Publish(new EasyMqEvent()
-                    {
-                        EventName = "Hello world"
-                    }, new ProducerContext()
-                    {
-                        Mandatory = false,
-                        RoutingKey = "test"
-                    });
+  private readonly IEventPublisher<EasyMqEvent> _eventPublisher;
+  
+  await _eventPublisher.Publish(new EasyMqEvent()
+                  {
+                      EventName = "Hello world"
+                  }, new ProducerContext()
+                  {
+                      Mandatory = false,
+                      RoutingKey = "test"
+                  });
 ```
 In startup, calling the two extension methods `AddEasyMq`, `AddEventConsumer` and `AddEventProducer` is all it takes to configure the event handlers.
 
 ```csharp
 await Host.CreateDefaultBuilder(args)
-    .ConfigureHostConfiguration(configurationBuilder => configurationBuilder.AddJsonFile("appsettings.json", false, true))
+    .ConfigureHostConfiguration(configurationBuilder => configurationBuilder
+        .AddJsonFile("appsettings.json", false, true)
+        .AddUserSecrets<Program>())
     .ConfigureServices((context, services) =>
     {
-        services.AddEasyMqConsumer(factory =>
+        services.AddEasyMq(context.Configuration, builder =>
             {
-                factory.Uri = new Uri("amqp://localhost:5672/");
-                factory.DispatchConsumersAsync = true;
-                factory.TopologyRecoveryEnabled = true;
-                factory.AutomaticRecoveryEnabled = true;
-                return factory;
-            }, context.Configuration, "RabbitConsumerConfigurations")
+                builder.WithConnectionFactory(factory =>
+                {
+                    factory.Uri =
+                        new Uri(
+                            $"amqp://{context.Configuration["rmq_username"]}:{context.Configuration["rmq_password"]}@localhost:5672/");
+                    factory.DispatchConsumersAsync = true;
+                    factory.TopologyRecoveryEnabled = true;
+                    factory.AutomaticRecoveryEnabled = true;
+                    return factory;
+                });
+                builder.WithConsumerSection("RabbitConsumerConfigurations");
+                builder.WithProducerSection("RabbitProducerConfigurations");
+            })
             .AddEventConsumer<EasyMqEvent, EasyMqEventHandler>()
             .AddEventProducer<EasyMqEvent>();
     })

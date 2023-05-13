@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
@@ -27,6 +28,7 @@ public class EventConsumerTests
     public EventConsumerTests()
     {
         _eventHandler = Substitute.For<IEventHandler<TestEvent>>();
+        var handlerFactory = () => _eventHandler;
         _consumerConfigs = Options.Create(new List<ConsumerConfiguration>()
         {
             new ConsumerConfiguration()
@@ -34,7 +36,7 @@ public class EventConsumerTests
                 EventType = "TestEvent",
             }
         });
-        _consumer = new AsyncEventConsumer<TestEvent>(_eventHandler, _consumerConfigs);
+        _consumer = new AsyncEventConsumer<TestEvent>(handlerFactory, _consumerConfigs);
     }
 
     [Fact]
