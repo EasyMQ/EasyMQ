@@ -117,6 +117,7 @@ await Host.CreateDefaultBuilder(args)
   - [ ] Consume from Direct Exchanges
   - [ ] Consume from Default Exchange 
 - [x] Producer capabilities
+- [ ] Serialization Options
 - [ ] Tracing
 - [ ] Error queues and exception flows
 
