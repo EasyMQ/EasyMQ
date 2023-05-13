@@ -39,9 +39,14 @@ Each domain event needs to be configured in a consumer section defined by the cl
 ```
 With the configuration above, an event consumer of type `AsyncEventConsumer<EasyMqEvent>` with message type of `EasyMqEvent` will be spawned with the given queue and exchange configuration.
 Similarly an `AsyncEventProducer<EasyMqEvent>` will be provisioned with an `IEventPublisher<EasyMqEvent>` accessible to the client for publishing messages.
-The corresponding code for the consumer event handler is as follows: -
+The corresponding code of a consumer event handler for an event `EasyMqEvent` is as follows: -
 
 ```csharp
+public class EasyMqEvent : IEvent
+{
+    public string EventName { get; set; }
+}
+
 public class EasyMqEventHandler : IEventHandler<EasyMqEvent>
 {
     private readonly ILogger<EasyMqEventHandler> _logger;
@@ -82,9 +87,6 @@ In startup, calling the two extension methods `AddEasyMq`, `AddEventConsumer` an
 
 ```csharp
 await Host.CreateDefaultBuilder(args)
-    .ConfigureHostConfiguration(configurationBuilder => configurationBuilder
-        .AddJsonFile("appsettings.json", false, true)
-        .AddUserSecrets<Program>())
     .ConfigureServices((context, services) =>
     {
         services.AddEasyMq(context.Configuration, builder =>
