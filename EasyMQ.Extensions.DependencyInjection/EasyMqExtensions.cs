@@ -48,7 +48,7 @@ public static class EasyMqExtensions
         where THandler: class, IEventHandler<TEvent>
     {
         services.AddTransient<IEventHandler<TEvent>, THandler>();
-        services.AddTransient<Func<IEventHandler<TEvent>>>(sp => sp.GetRequiredService<IEventHandler<TEvent>>);
+        services.AddSingleton<Func<IEventHandler<TEvent>>>(sp => sp.GetRequiredService<IEventHandler<TEvent>>);
         services.AddSingleton<AsyncEventConsumer<TEvent>>();
         services.AddHostedService<ConsumerEventHost<AsyncEventConsumer<TEvent>>>();
         return services;
@@ -57,10 +57,10 @@ public static class EasyMqExtensions
     public static IServiceCollection AddEventProducer<TEvent>(this IServiceCollection services)
         where TEvent : class, IEvent, new()
     {
-        services.AddSingleton<AsyncEventPublisher<TEvent>>();
-        services.AddSingleton<IEventProducer<TEvent>>(sp =>
+        services.AddTransient<AsyncEventPublisher<TEvent>>();
+        services.AddTransient<IEventProducer<TEvent>>(sp =>
             sp.GetRequiredService<AsyncEventPublisher<TEvent>>());
-        services.AddSingleton<IEventPublisher<TEvent>>(sp =>
+        services.AddTransient<IEventPublisher<TEvent>>(sp =>
             sp.GetRequiredService<AsyncEventPublisher<TEvent>>());
         return services;
     }

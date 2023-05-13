@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using EasyMQ.Consumer;
+using EasyMQ.E2E.Tests.TestHandlers;
 using EasyMQ.Extensions.DependencyInjection;
+using EasyMQ.Publisher;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 
 namespace EasyMQ.E2E.Tests;
 
@@ -21,7 +26,7 @@ public class Fixture
         configBuilder
             .AddEnvironmentVariables()
             .AddJsonFile("appsettings.json", false)
-            .AddUserSecrets<EndToEndTests>();
+            .AddUserSecrets<TopicEndToEndTests>();
         AddConfigurationSources(configBuilder);
         _configuration = configBuilder.Build();
         AddServices(services, _configuration);
@@ -55,9 +60,15 @@ public class Fixture
             builder.WithConsumerSection("RabbitConsumerConfigurations");
             builder.WithProducerSection("RabbitProducerConfigurations");
         });
+        services.AddTransient<ILogger<AsyncEventPublisher<TopicEvent>>>(
+                sp =>
+                    Substitute.For<ILogger<AsyncEventPublisher<TopicEvent>>>())
+            .AddTransient<ILogger<RabbitMqProvider>>(sp => Substitute.For<ILogger<RabbitMqProvider>>())
+            .AddTransient<ILogger<AsyncEventPublisher<HeaderEvent>>>(sp =>
+                Substitute.For<ILogger<AsyncEventPublisher<HeaderEvent>>>());
     }
 
-    protected async Task When<T>(Func<T, Task> action) where T : class
+    protected async Task Given<T>(Func<T, Task> action) where T : class
     {
         var service = _provider.GetRequiredService<T>();
         await action(service);
@@ -67,5 +78,10 @@ public class Fixture
     {
         var service = _provider.GetRequiredService<T>();
         await action(service);
+    }
+
+    ~Fixture()
+    {
+        _provider.Dispose();
     }
 }

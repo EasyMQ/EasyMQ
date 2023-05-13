@@ -5,15 +5,15 @@ using Newtonsoft.Json;
 
 namespace EasyMQ.Console;
 
-public class EasyMqEvent : IEvent
+public class EasyMqTopicEvent : IEvent
 {
     public string EventName { get; set; }
 }
-public class EasyMqEventHandler : IEventHandler<EasyMqEvent>
+public class EasyMqTopicEventHandler : IEventHandler<EasyMqTopicEvent>
 {
-    private readonly ILogger<EasyMqEventHandler> _logger;
+    private readonly ILogger<EasyMqTopicEventHandler> _logger;
 
-    public EasyMqEventHandler(ILogger<EasyMqEventHandler> logger)
+    public EasyMqTopicEventHandler(ILogger<EasyMqTopicEventHandler> logger)
     {
         _logger = logger;
     }
@@ -23,10 +23,10 @@ public class EasyMqEventHandler : IEventHandler<EasyMqEvent>
         _logger.LogInformation("Optionally implementing the Before hook, to do preprocessing");
         return Task.CompletedTask;
     }
-    public Task Handle(ReceiverContext receiverContext, EasyMqEvent @event)
+    public Task Handle(ReceiverContext receiverContext, EasyMqTopicEvent topicEvent)
     {
         _logger.LogInformation("Received a new message, {event}",
-            JsonConvert.SerializeObject(@event, Formatting.Indented));
+            JsonConvert.SerializeObject(topicEvent, Formatting.Indented));
         return Task.CompletedTask;
     }
 }

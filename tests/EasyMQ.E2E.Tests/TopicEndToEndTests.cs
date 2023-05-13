@@ -13,26 +13,26 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace EasyMQ.E2E.Tests;
 
-public class EndToEndTests: Fixture
+public class TopicEndToEndTests: Fixture
 {
-    private readonly IFakeLogger _topicLogger;
+    private readonly ITestOutputHelper _testOutputHelper;
+    private IFakeLogger _topicLogger;
 
-    public EndToEndTests()
+    public TopicEndToEndTests(ITestOutputHelper testOutputHelper)
     {
-        _topicLogger = Substitute.For<IFakeLogger>();
+        _testOutputHelper = testOutputHelper;
     }
     protected override void AddServices(IServiceCollection services, IConfigurationRoot configurationRoot)
     {
+        _topicLogger = Substitute.For<IFakeLogger>();
         services
             .AddEventConsumer<TopicEvent, TopicEventHandler>()
             .AddEventProducer<TopicEvent>()
-            .AddSingleton<IFakeLogger>(sp => _topicLogger)
-            .AddTransient<ILogger<AsyncEventPublisher<TopicEvent>>>(sp =>
-                Substitute.For<ILogger<AsyncEventPublisher<TopicEvent>>>())
-            .AddTransient<ILogger<RabbitMqProvider>>(sp => Substitute.For<ILogger<RabbitMqProvider>>())
+            .AddSingleton(_topicLogger)
             .AddTransient<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent>>>>(sp =>
                 Substitute.For<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent>>>>());
         
@@ -42,7 +42,7 @@ public class EndToEndTests: Fixture
     [Fact]
     public async Task ForATopicEvent_WhenIPublishAnEvent_TheTopicEventHandlerShouldGetInvoked()
     {
-        await When<IEventPublisher<TopicEvent>>(i =>
+        await Given<IEventPublisher<TopicEvent>>(i =>
         {
             i.Publish(new TopicEvent() {EventName = "test"},
                 new ProducerContext() {RoutingKey = "test", Mandatory = false});
@@ -54,7 +54,31 @@ public class EndToEndTests: Fixture
         
         await Then<IFakeLogger>(i =>
         {
+            _testOutputHelper.WriteLine(i.ToString());
+            _testOutputHelper.WriteLine(_topicLogger.ToString());
             i.Received(1).Log(Arg.Any<string>());
+            return Task.CompletedTask;
+        });
+    }
+    
+    [Fact]
+    public async Task ForATopicEvent_WhenIPublishAnEventWithAnUnknownRoutingKey_TheTopicEventHandlerShouldNotGetInvoked()
+    {
+        await Given<IEventPublisher<TopicEvent>>(i =>
+        {
+            i.Publish(new TopicEvent() {EventName = "test"},
+                new ProducerContext() {RoutingKey = "not_test", Mandatory = false});
+            
+            return Task.CompletedTask;
+        });
+        
+        Thread.Sleep(500);
+        
+        await Then<IFakeLogger>(i =>
+        {
+            _testOutputHelper.WriteLine(i.ToString());
+            _testOutputHelper.WriteLine(_topicLogger.ToString());
+            i.DidNotReceive().Log(Arg.Any<string>());
             return Task.CompletedTask;
         });
     }

@@ -1,25 +1,22 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using EasyMQ.Abstractions;
 using EasyMQ.Abstractions.Consumer;
-using Microsoft.Extensions.Logging;
 
 namespace EasyMQ.E2E.Tests.TestHandlers;
 
-public class TopicEvent : IEvent
+public class HeaderEvent : IEvent
 {
     public string EventName { get; set; }
 }
-
-public class TopicEventHandler : IEventHandler<TopicEvent>
+public class HeaderEventHandler: IEventHandler<HeaderEvent>
 {
     private readonly IFakeLogger _logger;
 
-    public TopicEventHandler(IFakeLogger logger)
+    public HeaderEventHandler(IFakeLogger logger)
     {
         _logger = logger;
     }
-    public Task Handle(ReceiverContext receiverContext, TopicEvent @event)
+    public Task Handle(ReceiverContext receiverContext, HeaderEvent @event)
     {
         _logger.Log(@event.EventName);
         return Task.CompletedTask;

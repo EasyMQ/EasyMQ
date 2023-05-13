@@ -27,8 +27,11 @@ await Host.CreateDefaultBuilder(args)
                 builder.WithConsumerSection("RabbitConsumerConfigurations");
                 builder.WithProducerSection("RabbitProducerConfigurations");
             })
-            .AddEventConsumer<EasyMqEvent, EasyMqEventHandler>()
-            .AddEventProducer<EasyMqEvent>();
+            .AddEventConsumer<EasyMqTopicEvent, EasyMqTopicEventHandler>()
+            .AddEventProducer<EasyMqTopicEvent>()
+            .AddEventConsumer<EasyMqHeaderEvent, EasyMqHeaderEventHandler>()
+            .AddEventProducer<EasyMqHeaderEvent>();
+        
         services.AddHostedService<EasyMqTimedProducerService>();
     })
     .RunConsoleAsync();

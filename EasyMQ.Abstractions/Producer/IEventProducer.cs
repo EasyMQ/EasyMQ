@@ -8,6 +8,7 @@ public interface IEventProducer<in TEvent> where TEvent: IEvent
 
 public class ProducerContext
 {
-    public string RoutingKey { get; set; }
+    public string RoutingKey { get; set; } = string.Empty;
     public bool Mandatory { get; set; }
+    public Dictionary<string, dynamic> Headers { get; set; } = new();
 }

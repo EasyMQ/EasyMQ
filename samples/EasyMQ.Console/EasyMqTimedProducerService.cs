@@ -7,12 +7,16 @@ namespace EasyMQ.Console;
 /// </summary>
 public class EasyMqTimedProducerService: IHostedService
 {
-    private readonly IEventPublisher<EasyMqEvent> _eventPublisher;
+    private readonly IEventPublisher<EasyMqTopicEvent> _topicEventPublisher;
+    private readonly IEventPublisher<EasyMqHeaderEvent> _headerEventPublisher;
     private Timer? _timer;
 
-    public EasyMqTimedProducerService(IEventPublisher<EasyMqEvent> eventPublisher)
+    public EasyMqTimedProducerService(
+        IEventPublisher<EasyMqTopicEvent> topicEventPublisher,
+        IEventPublisher<EasyMqHeaderEvent> headerEventPublisher)
     {
-        _eventPublisher = eventPublisher;
+        _topicEventPublisher = topicEventPublisher;
+        _headerEventPublisher = headerEventPublisher;
     }
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -20,18 +24,30 @@ public class EasyMqTimedProducerService: IHostedService
         {
             return (object? state) =>
             {
-                _eventPublisher.Publish(new EasyMqEvent()
+                _topicEventPublisher.Publish(new EasyMqTopicEvent()
                 {
-                    EventName = "Hello world"
+                    EventName = "Topic Event"
                 }, new ProducerContext()
                 {
                     Mandatory = false,
                     RoutingKey = "test"
                 }).GetAwaiter().GetResult();
+
+                _headerEventPublisher.Publish(new EasyMqHeaderEvent()
+                {
+                    EventName = "Header Event"
+                }, new ProducerContext()
+                {
+                    Mandatory = false,
+                    Headers = new Dictionary<string, dynamic>()
+                    {
+                        {"EVENT_CODE", "header-evt-1"}
+                    }
+                });
             };
         }
 
-        _timer = new Timer(Callback(), null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
+        _timer = new Timer(Callback(), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(500));
         return Task.CompletedTask;
     }
 

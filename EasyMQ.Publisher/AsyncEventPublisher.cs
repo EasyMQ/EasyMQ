@@ -42,8 +42,13 @@ public sealed class AsyncEventPublisher<TEvent> : IEventProducer<TEvent>, IEvent
             if (_producerConfig.ShouldDeclareExchange)
                 channel.ExchangeDeclare(_producerConfig.ExchangeName, _producerConfig.ExchangeType,
                     _producerConfig.IsDurable, _producerConfig.ExchangeAutoDelete);
-
-            channel.BasicPublish(_producerConfig.ExchangeName, context.RoutingKey, context.Mandatory, null,
+            IBasicProperties basicProperties = null;
+            if (context.Headers != null)
+            {
+                basicProperties = channel.CreateBasicProperties();
+                basicProperties.Headers = context.Headers;
+            }
+            channel.BasicPublish(_producerConfig.ExchangeName, context.RoutingKey, context.Mandatory, basicProperties,
                 Encoding.UTF8.GetBytes(JsonSerializer.Serialize(@event)));
         }
         catch (Exception e)
