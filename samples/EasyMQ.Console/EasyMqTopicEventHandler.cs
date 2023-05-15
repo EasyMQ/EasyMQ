@@ -26,7 +26,7 @@ public class EasyMqTopicEventHandler : IEventHandler<EasyMqTopicEvent>
         _logger = logger;
     }
 
-    public Task BeforeHandle(ReceiverContext receiverContext)
+    public Task BeforeHandle(ReceiverContext receiverContext, EasyMqTopicEvent @event)
     {
         _logger.LogInformation("Optionally implementing the Before hook, to do preprocessing");
         return Task.CompletedTask;

@@ -45,8 +45,8 @@ public sealed class AsyncEventConsumer<TEvent>: IEventConsumer
     {
         var eventHandler = _handlerFactory();
         var newEvent = JsonSerializer.Deserialize<TEvent>(context.Body.AsSpan(0, context.BodySize));
-        await eventHandler.BeforeHandle(context);
+        await eventHandler.BeforeHandle(context, newEvent);
         await eventHandler.Handle(context, newEvent);
-        await eventHandler.PostHandle(context);
+        await eventHandler.PostHandle(context, newEvent);
     }
 }
