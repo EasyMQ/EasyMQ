@@ -13,19 +13,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace EasyMQ.E2E.Tests;
 
 public class TopicEndToEndTests: Fixture
 {
-    private readonly ITestOutputHelper _testOutputHelper;
     private IFakeLogger _topicLogger;
 
-    public TopicEndToEndTests(ITestOutputHelper testOutputHelper)
-    {
-        _testOutputHelper = testOutputHelper;
-    }
     protected override void AddServices(IServiceCollection services, IConfigurationRoot configurationRoot)
     {
         _topicLogger = Substitute.For<IFakeLogger>();
@@ -54,8 +48,6 @@ public class TopicEndToEndTests: Fixture
         
         await Then<IFakeLogger>(i =>
         {
-            _testOutputHelper.WriteLine(i.ToString());
-            _testOutputHelper.WriteLine(_topicLogger.ToString());
             i.Received(1).Log(Arg.Any<string>());
             return Task.CompletedTask;
         });
@@ -76,8 +68,6 @@ public class TopicEndToEndTests: Fixture
         
         await Then<IFakeLogger>(i =>
         {
-            _testOutputHelper.WriteLine(i.ToString());
-            _testOutputHelper.WriteLine(_topicLogger.ToString());
             i.DidNotReceive().Log(Arg.Any<string>());
             return Task.CompletedTask;
         });
