@@ -9,6 +9,11 @@ using RabbitMQ.Client;
 
 namespace EasyMQ.Publisher;
 
+/// <summary>
+/// Bootstraps a publisher using <see cref="IEventProducer{TEvent}"/>
+/// To be used with <see cref="IEventPublisher{TEvent}"/> for publishing events.
+/// </summary>
+/// <typeparam name="TEvent"></typeparam>
 public sealed class AsyncEventPublisher<TEvent> : IEventProducer<TEvent>, IEventPublisher<TEvent>
     where TEvent : IEvent
 {

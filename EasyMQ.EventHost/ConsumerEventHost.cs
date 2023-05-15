@@ -15,7 +15,7 @@ namespace EasyMQ.Consumer;
 /// <summary>
 /// Bootstraps a consumer of type <see cref="IEventConsumer"/>
 /// </summary>
-/// <typeparam name="TConsumer"></typeparam>
+/// <typeparam name="TConsumer">Implements all <see cref="IEventConsumer"/> types.</typeparam>
 public sealed class ConsumerEventHost<TConsumer> : IHostedService
     where TConsumer: IEventConsumer
 {

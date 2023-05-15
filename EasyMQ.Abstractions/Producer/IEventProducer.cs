@@ -1,5 +1,9 @@
 namespace EasyMQ.Abstractions.Producer;
 
+/// <summary>
+/// An internal interface which is used to bootstrap a producer.
+/// </summary>
+/// <typeparam name="TEvent"></typeparam>
 public interface IEventProducer<in TEvent> where TEvent: IEvent
 {
     RabbitProducerConfiguration GetProducerExchangeConfiguration(List<RabbitProducerConfiguration> rabbitProducerConfigurations);

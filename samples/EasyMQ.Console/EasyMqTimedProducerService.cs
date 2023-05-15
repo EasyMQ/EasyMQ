@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace EasyMQ.Console;
 /// <summary>
-/// A producer which keeps producing messages every 5 seconds to the exchange
+/// A producer which keeps producing messages every 5 seconds to the exchanges
 /// </summary>
 public class EasyMqTimedProducerService: IHostedService
 {

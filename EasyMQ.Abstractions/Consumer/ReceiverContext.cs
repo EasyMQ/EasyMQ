@@ -1,4 +1,4 @@
-namespace EasyMQ.Abstractions;
+namespace EasyMQ.Abstractions.Consumer;
 
 public class ReceiverContext
 {
@@ -25,8 +25,4 @@ public class ReceiverContext
         ConsumerTag = consumerTag;
         Redelivered = redelivered;
     }
-}
-
-public interface IEvent
-{
 }

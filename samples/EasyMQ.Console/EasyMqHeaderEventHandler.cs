@@ -5,6 +5,10 @@ using Newtonsoft.Json;
 
 namespace EasyMQ.Console;
 
+/// <summary>
+/// A container class that implements <see cref="IEvent"/>
+/// Each <see cref="IEventHandler{TEvent}"/> needs an <see cref="IEvent"/>
+/// </summary>
 public class EasyMqHeaderEvent : IEvent
 {
     public string EventName { get; set; }

@@ -15,6 +15,15 @@ namespace EasyMQ.Extensions.DependencyInjection;
 
 public static class EasyMqExtensions
 {
+    /// <summary>
+    /// Configures basic internal dependencies for RabbitMQ.
+    /// <see cref="setup"/> captures the <see cref="ConnectionFactory"/> configuration and consumer/producer sections.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="setup"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static IServiceCollection AddEasyMq(this IServiceCollection services,
         IConfiguration configuration,
         Action<EasyMqConfigurationBuilder> setup)
@@ -43,6 +52,15 @@ public static class EasyMqExtensions
         services.AddSingleton(connectionFactory);
         return services;
     }
+    /// <summary>
+    /// Registers a <see cref="TEvent"/> with a <see cref="THandler"/>.
+    /// Internally it will spin up an <see cref="Microsoft.Extensions.Hosting.IHostedService"/>
+    /// to consume external events as per the configurations provided.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <typeparam name="TEvent">Types that implement <see cref="IEvent"/></typeparam>
+    /// <typeparam name="THandler">Types that implement <see cref="IEventHandler{TEvent}"/></typeparam>
+    /// <returns></returns>
     public static IServiceCollection AddEventConsumer<TEvent, THandler>(this IServiceCollection services) 
         where TEvent : class, IEvent, new()
         where THandler: class, IEventHandler<TEvent>
