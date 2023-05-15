@@ -66,7 +66,11 @@ public static class EasyMqExtensions
         where THandler: class, IEventHandler<TEvent>
     {
         services.AddTransient<IEventHandler<TEvent>, THandler>();
-        services.AddSingleton<Func<IEventHandler<TEvent>>>(sp => sp.GetRequiredService<IEventHandler<TEvent>>);
+        services.AddSingleton<Func<IEventHandler<TEvent>>>(sp =>
+        {
+            var scope = sp.CreateScope();
+            return scope.ServiceProvider.GetRequiredService<IEventHandler<TEvent>>;
+        });
         services.AddSingleton<AsyncEventConsumer<TEvent>>();
         services.AddHostedService<ConsumerEventHost<AsyncEventConsumer<TEvent>>>();
         return services;
