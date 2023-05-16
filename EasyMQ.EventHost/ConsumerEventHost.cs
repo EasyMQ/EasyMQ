@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Collections.Concurrent;
+using System.Threading.Channels;
 using EasyMQ.Abstractions;
 using EasyMQ.Abstractions.Consumer;
 using EasyMQ.EventHost.Abstractions;
@@ -23,10 +24,9 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
     private readonly IConnectionProvider _provider;
     private readonly ILogger<ConsumerEventHost<TConsumer>> _logger;
     private Task _processorTask = null!;
-    private readonly BlockingCollection<Func<Task>> _onHandleTasks;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private IModel _consumerChannel = null!;
-
+    private readonly Channel<Func<ValueTask>> _processorChannel;
 
     public ConsumerEventHost(TConsumer consumer,
         IConnectionProvider provider,
@@ -36,7 +36,7 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
         _provider = provider;
         _logger = logger;
         _cancellationTokenSource = new CancellationTokenSource();
-        _onHandleTasks = new BlockingCollection<Func<Task>>();
+        _processorChannel = Channel.CreateUnbounded<Func<ValueTask>>();
     }
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -48,9 +48,9 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _consumerChannel.Close();
-        _onHandleTasks.CompleteAdding();
+        _processorChannel.Writer.Complete();
         // Wait for queue to process pending requests
-        while(_onHandleTasks.Any()) { }
+        while(_processorChannel.Reader.Count > 0) { }
         _cancellationTokenSource.Cancel();
             
         return Task.CompletedTask;
@@ -71,50 +71,47 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
             var basicConsumer = new AsyncEventingBasicConsumer(channel);
             basicConsumer.Received += async (_, args) =>
             {
-                if (_onHandleTasks.IsAddingCompleted)
+                // Need to copy, since args.Body is not thread safe
+                // Zero allocation buffer
+                // Rent may return size more than requested or equal
+                // Need to create a span using .AsSpan(0, length) to read it correctly
+                var sharedMemory = ArrayPool<byte>.Shared;
+                var bodyLength = args.Body.Length;
+                var rentedMemory = sharedMemory.Rent(bodyLength);
+                args.Body.CopyTo(rentedMemory);
+                var written = _processorChannel.Writer.TryWrite(async () =>
+                {
+                    try
+                    {
+                        await _consumer.Consume(new ReceiverContext(
+                            rentedMemory,
+                            args.RoutingKey,
+                            (ushort) args.Body.Length,
+                            args.DeliveryTag,
+                            args.Exchange,
+                            args.ConsumerTag,
+                            args.Redelivered));
+                        channel.BasicAck(args.DeliveryTag, false);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogCritical(
+                            "Could not process the message successfully:: {ExceptionType} \n" +
+                            "{Message} \n " +
+                            "StackTrace:: {StackTrace} \n",
+                            e.Message,
+                            e.StackTrace,
+                            e.GetType());
+                        channel.BasicNack(args.DeliveryTag, false, true);
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(rentedMemory);
+                    }
+                });
+                if (!written)
                 {
                     channel.BasicNack(args.DeliveryTag, false, true);
-                }
-                else
-                {
-                    // Need to copy, since args.Body is not thread safe
-                    // Zero allocation buffer
-                    // Rent may return size more than requested or equal
-                    // Need to create a span using .AsSpan(0, length) to read it correctly
-                    var sharedMemory = ArrayPool<byte>.Shared;
-                    var bodyLength = args.Body.Length;
-                    var rentedMemory = sharedMemory.Rent(bodyLength);
-                    args.Body.CopyTo(rentedMemory);
-                    _onHandleTasks.Add(async () =>
-                    {
-                        try
-                        {
-                            await _consumer.Consume(new ReceiverContext(
-                                rentedMemory,
-                                args.RoutingKey,
-                                (ushort) args.Body.Length,
-                                args.DeliveryTag,
-                                args.Exchange,
-                                args.ConsumerTag,
-                                args.Redelivered));
-                            channel.BasicAck(args.DeliveryTag, false);
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.LogCritical(
-                                "Could not process the message successfully:: {ExceptionType} \n" +
-                                        "{Message} \n " +
-                                        "StackTrace:: {StackTrace} \n",
-                              e.Message,
-                                e.StackTrace,
-                                e.GetType());
-                            channel.BasicNack(args.DeliveryTag, false, true);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(rentedMemory);
-                        }
-                    });
                 }
 
                 await Task.Yield();
@@ -157,7 +154,7 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
     
     private async Task ProcessTasks()
     {
-        foreach (var action in _onHandleTasks.GetConsumingEnumerable(_cancellationTokenSource.Token))
+        await foreach (var action in _processorChannel.Reader.ReadAllAsync(_cancellationTokenSource.Token))
         {
             // Don't want any rogue exception crashing the entire task queue
             try
