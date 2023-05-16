@@ -9,7 +9,8 @@ public class EasyMqTimedProducerService: IHostedService
 {
     private readonly IEventPublisher<EasyMqTopicEvent> _topicEventPublisher;
     private readonly IEventPublisher<EasyMqHeaderEvent> _headerEventPublisher;
-    private Timer? _timer;
+    private Timer? _topicProducer;
+    private Timer? _headerProducer;
 
     public EasyMqTimedProducerService(
         IEventPublisher<EasyMqTopicEvent> topicEventPublisher,
@@ -31,8 +32,14 @@ public class EasyMqTimedProducerService: IHostedService
                 {
                     Mandatory = false,
                     RoutingKey = "test"
-                }).GetAwaiter().GetResult();
+                });
+            };
+        }
 
+        TimerCallback HeaderCallback()
+        {
+            return (object? state) =>
+            {
                 _headerEventPublisher.Publish(new EasyMqHeaderEvent()
                 {
                     EventName = "Header Event"
@@ -47,13 +54,15 @@ public class EasyMqTimedProducerService: IHostedService
             };
         }
 
-        _timer = new Timer(Callback(), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(500));
+        _topicProducer = new Timer(Callback(), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(500));
+        _headerProducer = new Timer(HeaderCallback(), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(200));
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _timer?.Dispose();
+        _topicProducer?.Dispose();
+        _headerProducer?.Dispose();
         return Task.CompletedTask;
     }
 }
