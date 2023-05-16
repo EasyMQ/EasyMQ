@@ -4,13 +4,9 @@ using EasyMQ.Abstractions;
 using EasyMQ.Abstractions.Consumer;
 using Microsoft.Extensions.Options;
 
-[assembly: InternalsVisibleTo("EasyMQ.E2E.Tests")]
-[assembly: InternalsVisibleTo("EasyMQ.Consumer.Tests")]
-
-
 namespace EasyMQ.Consumers;
 
-internal sealed class AsyncEventConsumer<TEvent>: IEventConsumer
+public sealed class AsyncEventConsumer<TEvent>: IEventConsumer
     where TEvent: class, IEvent, new()
 {
     private readonly Func<IEventHandler<TEvent>> _handlerFactory;
