@@ -165,9 +165,9 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
             catch (Exception ex)
             {
                 _logger.LogCritical(
-                    "Cancellation request not processed Message:: {Message} \n" +
-                    "Cancellation request not processed StackTrace:: {StackTrace} \n" +
-                    "Cancellation request not processed Data:: {Data} \n",
+                    "Message was not processed ExceptionMessage:: {Message} \n" +
+                    "StackTrace:: {StackTrace} \n" +
+                    "Data:: {Data} \n",
                     ex.Message,
                     ex.StackTrace,
                     ex.Data);
