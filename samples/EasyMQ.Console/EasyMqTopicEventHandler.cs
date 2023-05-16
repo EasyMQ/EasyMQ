@@ -33,8 +33,28 @@ public class EasyMqTopicEventHandler : IEventHandler<EasyMqTopicEvent>
     }
     public Task Handle(ReceiverContext receiverContext, EasyMqTopicEvent topicEvent)
     {
-        _logger.LogInformation("Received a new message, {event}",
+        _logger.LogInformation("Received a new message in {Name} with routing key {RoutingKey}, {Event}",
+            nameof(EasyMqTopicEventHandler),
+            receiverContext.RoutingKey,
             JsonConvert.SerializeObject(topicEvent, Formatting.Indented));
+        return Task.CompletedTask;
+    }
+}
+
+public class EasyMqTopicEventHandler2 : IEventHandler<EasyMqTopicEvent>
+{
+    private readonly ILogger<EasyMqTopicEventHandler2> _logger;
+
+    public EasyMqTopicEventHandler2(ILogger<EasyMqTopicEventHandler2> logger)
+    {
+        _logger = logger;
+    }
+    public Task Handle(ReceiverContext receiverContext, EasyMqTopicEvent @event)
+    {
+        _logger.LogInformation("Received a new message in {Name} with routing key {RoutingKey}, {Event}",
+            nameof(EasyMqTopicEventHandler2),
+            receiverContext.RoutingKey,
+            JsonConvert.SerializeObject(@event, Formatting.Indented));
         return Task.CompletedTask;
     }
 }

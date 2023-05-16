@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyMQ.Abstractions.Producer;
@@ -22,23 +23,24 @@ public class TopicEndToEndTests: Fixture
         _topicLogger = Substitute.For<IFakeLogger>();
         services
             .AddEventConsumer<TopicEvent, TopicEventHandler>()
+            .AddEventConsumer<TopicEvent, TopicEventHandler2>()
             .AddEventProducer<TopicEvent>()
             .AddSingleton(_topicLogger)
             .AddTransient<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler>>>>(sp =>
-                Substitute.For<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler>>>>());
+                Substitute.For<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler>>>>())
+            .AddTransient<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler2>>>>(sp =>
+                Substitute.For<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler2>>>>());
         
         base.AddServices(services, configurationRoot);
     }
-
     [Fact]
     public async Task ForATopicEvent_WhenIPublishAnEvent_TheTopicEventHandlerShouldGetInvoked()
     {
-        await Given<IEventPublisher<TopicEvent>>(i =>
+        await Given<IEventPublisher<TopicEvent>>(async i =>
         {
-            i.Publish(new TopicEvent() {EventName = "test"},
+            await i.Publish(new TopicEvent() {EventName = "test"},
                 new ProducerContext() {RoutingKey = "test", Mandatory = false});
-            
-            return Task.CompletedTask;
+            // i.Publish(new TopicEvent() {EventName = "test"}, new ProducerContext() {RoutingKey = "test2"});
         });
         
         Thread.Sleep(1000);
@@ -49,16 +51,34 @@ public class TopicEndToEndTests: Fixture
             return Task.CompletedTask;
         });
     }
+
+    [Fact]
+    public async Task ForATopicEvent_WhenIPublishAnEventWithTwoRoutingKeys_BothTopicEventHandlersShouldGetInvoked()
+    {
+        await Given<IEventPublisher<TopicEvent>>(async i =>
+        {
+            await i.Publish(new TopicEvent() {EventName = "test"},
+                new ProducerContext() {RoutingKey = "test", Mandatory = false});
+            await i.Publish(new TopicEvent() {EventName = "test"}, new ProducerContext() {RoutingKey = "test2"});
+        });
+        
+        Thread.Sleep(1000);
+        
+        await Then<IFakeLogger>(i =>
+        {
+            i.Received(2).Log(Arg.Any<string>());
+            i.ClearReceivedCalls();
+            return Task.CompletedTask;
+        });
+    }
     
     [Fact]
     public async Task ForATopicEvent_WhenIPublishAnEventWithAnUnknownRoutingKey_TheTopicEventHandlerShouldNotGetInvoked()
     {
-        await Given<IEventPublisher<TopicEvent>>(i =>
+        await Given<IEventPublisher<TopicEvent>>(async i =>
         {
-            i.Publish(new TopicEvent() {EventName = "test"},
+            await i.Publish(new TopicEvent() {EventName = "test"},
                 new ProducerContext() {RoutingKey = "not_test", Mandatory = false});
-            
-            return Task.CompletedTask;
         });
         
         Thread.Sleep(1000);
@@ -66,6 +86,7 @@ public class TopicEndToEndTests: Fixture
         await Then<IFakeLogger>(i =>
         {
             i.DidNotReceive().Log(Arg.Any<string>());
+            i.ClearReceivedCalls();
             return Task.CompletedTask;
         });
     }

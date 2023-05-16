@@ -14,7 +14,7 @@ using NSubstitute;
 
 namespace EasyMQ.E2E.Tests;
 
-public class Fixture
+public class Fixture: IDisposable
 {
     private readonly IConfigurationRoot _configuration;
     private readonly ServiceProvider _provider;
@@ -80,8 +80,16 @@ public class Fixture
         await action(service);
     }
 
-    ~Fixture()
+    public void Dispose()
     {
+        // If we don't do this, GC doesn't kick in time for the next test.
+        // The existing test run consumes the next test's event too
+        // By manually stopping, the channel itself won't accept any new messages and Nack them.
+        var hostedServices = _provider.GetServices<IHostedService>();
+        foreach (var hostedService in hostedServices)
+        {
+            hostedService.StopAsync(CancellationToken.None).GetAwaiter().GetResult();
+        }
         _provider.Dispose();
     }
 }

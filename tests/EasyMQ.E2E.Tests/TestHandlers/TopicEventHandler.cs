@@ -25,3 +25,18 @@ public class TopicEventHandler : IEventHandler<TopicEvent>
         return Task.CompletedTask;
     }
 }
+
+public class TopicEventHandler2 : IEventHandler<TopicEvent>
+{
+    private readonly IFakeLogger _logger;
+
+    public TopicEventHandler2(IFakeLogger logger)
+    {
+        _logger = logger;
+    }
+    public Task Handle(ReceiverContext receiverContext, TopicEvent @event)
+    {
+        _logger.Log(@event.EventName);
+        return Task.CompletedTask;
+    }
+}
