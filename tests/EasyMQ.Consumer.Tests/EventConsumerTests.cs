@@ -8,17 +8,23 @@ using EasyMQ.Abstractions.Consumer;
 using EasyMQ.Consumers;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.TestPlatform.Common.Interfaces;
 using NSubstitute;
 using Xunit;
 
 namespace EasyMQ.Consumer.Tests;
 
+class TestHandler : IEventHandler<EventConsumerTests.TestEvent>
+{
+    public Task Handle(ReceiverContext receiverContext, EventConsumerTests.TestEvent @event)
+    {
+        throw new NotImplementedException();
+    }
+}
 public class EventConsumerTests
 {
     private readonly IEventHandler<TestEvent> _eventHandler;
     private readonly IOptions<List<ConsumerConfiguration>> _consumerConfigs;
-    private readonly AsyncEventConsumer<TestEvent> _consumer;
+    private readonly AsyncEventConsumer<TestEvent, TestHandler> _consumer;
 
     public class TestEvent : IEvent
     {
@@ -33,10 +39,11 @@ public class EventConsumerTests
         {
             new ConsumerConfiguration()
             {
-                EventType = "TestEvent",
+                EventName = "TestEvent",
+                EventHandlerName = "TestHandler"
             }
         });
-        _consumer = new AsyncEventConsumer<TestEvent>(handlerFactory, _consumerConfigs);
+        _consumer = new AsyncEventConsumer<TestEvent, TestHandler>(handlerFactory, _consumerConfigs);
     }
 
     [Fact]

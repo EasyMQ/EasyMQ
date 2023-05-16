@@ -6,7 +6,8 @@ public class ConsumerConfiguration
     {
         Bindings = new List<Binding>();
     }
-    public string EventType { get; set; }
+    public string EventName { get; set; }
+    public string EventHandlerName { get; set; }
     public bool IsDurable { get; set; }
     public string QueueName { get; set; }
     public string ExchangeName { get; set; }

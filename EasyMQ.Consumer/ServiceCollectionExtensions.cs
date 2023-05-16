@@ -27,8 +27,8 @@ public static class ServiceCollectionExtensions
             var scope = sp.CreateScope();
             return scope.ServiceProvider.GetRequiredService<IEventHandler<TEvent>>;
         });
-        services.AddSingleton<AsyncEventConsumer<TEvent>>();
-        services.AddHostedService<ConsumerEventHost<AsyncEventConsumer<TEvent>>>();
+        services.AddSingleton<AsyncEventConsumer<TEvent, THandler>>();
+        services.AddHostedService<ConsumerEventHost<AsyncEventConsumer<TEvent, THandler>>>();
         return services;
     }
 }
