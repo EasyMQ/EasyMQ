@@ -56,7 +56,7 @@ public class EventConsumerTests
     public async Task GivenANewMessageContext_HandlerShouldBeInvoked()
     {
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new TestEvent()));
-        await _consumer.Consume(new ReceiverContext(body,
+        await _consumer.ConsumeAsync(new ReceiverContext(body,
             null, (ushort) body.Length, 0, null, null, false));
 
         await _eventHandler.Received(1).BeforeHandle(Arg.Any<ReceiverContext>(), Arg.Any<TestEvent>());

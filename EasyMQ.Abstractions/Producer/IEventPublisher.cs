@@ -6,5 +6,5 @@ namespace EasyMQ.Abstractions.Producer;
 /// <typeparam name="TEvent"></typeparam>
 public interface IEventPublisher<in TEvent> where TEvent : IEvent
 {
-    public Task Publish(TEvent @event, ProducerContext context);
+    public Task PublishAsync(TEvent @event, ProducerContext context);
 }

@@ -42,7 +42,7 @@ public sealed class AsyncEventConsumer<TEvent, THandler>: IEventConsumer
         };
     }
 
-    public async Task Consume(ReceiverContext context)
+    public async Task ConsumeAsync(ReceiverContext context)
     {
         var eventHandler = _handlerFactory();
         var newEvent = JsonSerializer.Deserialize<TEvent>(context.Body.AsSpan(0, context.BodySize));

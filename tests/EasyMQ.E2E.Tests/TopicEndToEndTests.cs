@@ -38,7 +38,7 @@ public class TopicEndToEndTests: Fixture
     {
         await Given<IEventPublisher<TopicEvent>>(async i =>
         {
-            await i.Publish(new TopicEvent() {EventName = "test"},
+            await i.PublishAsync(new TopicEvent() {EventName = "test"},
                 new ProducerContext() {RoutingKey = "test", Mandatory = false});
             // i.Publish(new TopicEvent() {EventName = "test"}, new ProducerContext() {RoutingKey = "test2"});
         });
@@ -57,9 +57,9 @@ public class TopicEndToEndTests: Fixture
     {
         await Given<IEventPublisher<TopicEvent>>(async i =>
         {
-            await i.Publish(new TopicEvent() {EventName = "test"},
+            await i.PublishAsync(new TopicEvent() {EventName = "test"},
                 new ProducerContext() {RoutingKey = "test", Mandatory = false});
-            await i.Publish(new TopicEvent() {EventName = "test"}, new ProducerContext() {RoutingKey = "test2"});
+            await i.PublishAsync(new TopicEvent() {EventName = "test"}, new ProducerContext() {RoutingKey = "test2"});
         });
         
         Thread.Sleep(500);
@@ -77,7 +77,7 @@ public class TopicEndToEndTests: Fixture
     {
         await Given<IEventPublisher<TopicEvent>>(async i =>
         {
-            await i.Publish(new TopicEvent() {EventName = "test"},
+            await i.PublishAsync(new TopicEvent() {EventName = "test"},
                 new ProducerContext() {RoutingKey = "not_test", Mandatory = false});
         });
         

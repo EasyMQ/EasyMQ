@@ -83,7 +83,7 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
                 {
                     try
                     {
-                        await _consumer.Consume(new ReceiverContext(
+                        await _consumer.ConsumeAsync(new ReceiverContext(
                             rentedMemory,
                             args.RoutingKey,
                             (ushort) args.Body.Length,

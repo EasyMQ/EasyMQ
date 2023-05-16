@@ -25,7 +25,7 @@ public class EasyMqTimedProducerService: IHostedService
         {
             return (object? state) =>
             {
-                _topicEventPublisher.Publish(new EasyMqTopicEvent()
+                _topicEventPublisher.PublishAsync(new EasyMqTopicEvent()
                 {
                     EventName = "Topic Event"
                 }, new ProducerContext()
@@ -33,7 +33,7 @@ public class EasyMqTimedProducerService: IHostedService
                     Mandatory = false,
                     RoutingKey = "test"
                 }).GetAwaiter().GetResult();
-                _topicEventPublisher.Publish(new EasyMqTopicEvent()
+                _topicEventPublisher.PublishAsync(new EasyMqTopicEvent()
                 {
                     EventName = "Topic Event"
                 }, new ProducerContext()
@@ -48,7 +48,7 @@ public class EasyMqTimedProducerService: IHostedService
         {
             return (object? state) =>
             {
-                _headerEventPublisher.Publish(new EasyMqHeaderEvent()
+                _headerEventPublisher.PublishAsync(new EasyMqHeaderEvent()
                 {
                     EventName = "Header Event"
                 }, new ProducerContext()

@@ -39,7 +39,7 @@ public sealed class AsyncEventPublisher<TEvent> : IEventProducer<TEvent>, IEvent
         return config;
     }
 
-    public Task Publish(TEvent @event, ProducerContext context)
+    public Task PublishAsync(TEvent @event, ProducerContext context)
     {
         var channel = _channelPool.Get();
         try

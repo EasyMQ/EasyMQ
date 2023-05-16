@@ -36,7 +36,7 @@ public class HeaderEndToEndTests: Fixture
     {
         await Given<IEventPublisher<HeaderEvent>>(i =>
         {
-            i.Publish(new HeaderEvent() {EventName = "headerEvent"}, new ProducerContext()
+            i.PublishAsync(new HeaderEvent() {EventName = "headerEvent"}, new ProducerContext()
             {
                 Mandatory = false,
                 Headers = new Dictionary<string, dynamic>()
@@ -61,7 +61,7 @@ public class HeaderEndToEndTests: Fixture
     {
         await Given<IEventPublisher<HeaderEvent>>(i =>
         {
-            i.Publish(new HeaderEvent() {EventName = "headerEvent"}, new ProducerContext()
+            i.PublishAsync(new HeaderEvent() {EventName = "headerEvent"}, new ProducerContext()
             {
                 Mandatory = false,
                 Headers = new Dictionary<string, dynamic>()
