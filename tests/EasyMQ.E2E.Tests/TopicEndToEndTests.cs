@@ -43,7 +43,7 @@ public class TopicEndToEndTests: Fixture
             // i.Publish(new TopicEvent() {EventName = "test"}, new ProducerContext() {RoutingKey = "test2"});
         });
         
-        Thread.Sleep(1000);
+        Thread.Sleep(500);
         
         await Then<IFakeLogger>(i =>
         {
@@ -62,7 +62,7 @@ public class TopicEndToEndTests: Fixture
             await i.Publish(new TopicEvent() {EventName = "test"}, new ProducerContext() {RoutingKey = "test2"});
         });
         
-        Thread.Sleep(1000);
+        Thread.Sleep(500);
         
         await Then<IFakeLogger>(i =>
         {
@@ -81,7 +81,7 @@ public class TopicEndToEndTests: Fixture
                 new ProducerContext() {RoutingKey = "not_test", Mandatory = false});
         });
         
-        Thread.Sleep(1000);
+        Thread.Sleep(500);
         
         await Then<IFakeLogger>(i =>
         {
