@@ -32,7 +32,15 @@ public class EasyMqTimedProducerService: IHostedService
                 {
                     Mandatory = false,
                     RoutingKey = "test"
-                });
+                }).GetAwaiter().GetResult();
+                _topicEventPublisher.Publish(new EasyMqTopicEvent()
+                {
+                    EventName = "Topic Event"
+                }, new ProducerContext()
+                {
+                    Mandatory = false,
+                    RoutingKey = "test2"
+                }).GetAwaiter().GetResult();
             };
         }
 

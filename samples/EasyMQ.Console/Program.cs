@@ -30,6 +30,7 @@ await Host.CreateDefaultBuilder(args)
                 builder.WithProducerSection("RabbitProducerConfigurations");
             })
             .AddEventConsumer<EasyMqTopicEvent, EasyMqTopicEventHandler>()
+            .AddEventConsumer<EasyMqTopicEvent, EasyMqTopicEventHandler2>()
             .AddEventProducer<EasyMqTopicEvent>()
             .AddEventConsumer<EasyMqHeaderEvent, EasyMqHeaderEventHandler>()
             .AddEventProducer<EasyMqHeaderEvent>();

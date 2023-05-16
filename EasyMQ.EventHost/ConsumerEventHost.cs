@@ -130,7 +130,7 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
             _logger.LogError("{Exception}:: {SerializeObject}", 
                 nameof(Exception), 
                 JsonConvert.SerializeObject(ex));
-            throw new ApplicationException("RMQ Exception");
+            throw;
         }
         return channel;
     }
