@@ -1,12 +1,16 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
 using EasyMQ.Abstractions;
 using EasyMQ.Abstractions.Consumer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+
+[assembly: InternalsVisibleTo("EasyMQ.E2E.Tests")]
+[assembly: InternalsVisibleTo("EasyMQ.Consumer.Tests")]
+
 
 namespace EasyMQ.Consumers;
 
-public sealed class AsyncEventConsumer<TEvent>: IEventConsumer
+internal sealed class AsyncEventConsumer<TEvent>: IEventConsumer
     where TEvent: class, IEvent, new()
 {
     private readonly Func<IEventHandler<TEvent>> _handlerFactory;

@@ -23,7 +23,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\EasyMQ.Consumer\EasyMQ.Consumer.csproj" />
       <ProjectReference Include="..\..\EasyMQ.Extensions.DependencyInjection\EasyMQ.Extensions.DependencyInjection.csproj" />
+      <ProjectReference Include="..\..\EasyMQ.Publisher\EasyMQ.Publisher.csproj" />
     </ItemGroup>
 
 </Project>

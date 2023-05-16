@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyMQ.Abstractions.Producer;
@@ -7,7 +5,6 @@ using EasyMQ.Consumer;
 using EasyMQ.Consumers;
 using EasyMQ.E2E.Tests.TestHandlers;
 using EasyMQ.Extensions.DependencyInjection;
-using EasyMQ.Publisher;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

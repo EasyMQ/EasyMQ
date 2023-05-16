@@ -18,11 +18,6 @@ public class HeaderEndToEndTests: Fixture
 {
     private IFakeLogger _topicLogger;
 
-    public HeaderEndToEndTests()
-    {
-        
-    }
-    
     protected override void AddServices(IServiceCollection services, IConfigurationRoot configurationRoot)
     {
         _topicLogger = Substitute.For<IFakeLogger>();
