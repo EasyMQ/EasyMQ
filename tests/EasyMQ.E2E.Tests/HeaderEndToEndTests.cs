@@ -25,8 +25,8 @@ public class HeaderEndToEndTests: Fixture
             .AddEventConsumer<HeaderEvent, HeaderEventHandler>()
             .AddEventProducer<HeaderEvent>()
             .AddSingleton(_topicLogger)
-            .AddTransient<ILogger<ConsumerEventHost<AsyncEventConsumer<HeaderEvent>>>>(sp =>
-                Substitute.For<ILogger<ConsumerEventHost<AsyncEventConsumer<HeaderEvent>>>>());
+            .AddTransient<ILogger<ConsumerEventHost<AsyncEventConsumer<HeaderEvent, HeaderEventHandler>>>>(sp =>
+                Substitute.For<ILogger<ConsumerEventHost<AsyncEventConsumer<HeaderEvent, HeaderEventHandler>>>>());
         
         base.AddServices(services, configurationRoot);
     }

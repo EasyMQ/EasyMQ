@@ -35,7 +35,7 @@ public sealed class AsyncEventPublisher<TEvent> : IEventProducer<TEvent>, IEvent
     {
         var config = rabbitProducerConfigurations.FirstOrDefault(
             c =>
-                c.EventType.Equals(typeof(TEvent).Name));
+                c.EventName.Equals(typeof(TEvent).Name));
         return config;
     }
 

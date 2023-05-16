@@ -2,7 +2,7 @@ namespace EasyMQ.Abstractions.Producer;
 
 public class RabbitProducerConfiguration
 {
-    public string EventType { get; set; }
+    public string EventName { get; set; }
     public string ExchangeName { get; set; }
     public string ExchangeType { get; set; }
     public bool ShouldDeclareExchange { get; set; }

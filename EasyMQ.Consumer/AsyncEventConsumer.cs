@@ -6,8 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace EasyMQ.Consumers;
 
-public sealed class AsyncEventConsumer<TEvent>: IEventConsumer
+public sealed class AsyncEventConsumer<TEvent, THandler>: IEventConsumer
     where TEvent: class, IEvent, new()
+    where THandler: IEventHandler<TEvent>
 {
     private readonly Func<IEventHandler<TEvent>> _handlerFactory;
     private readonly IOptions<List<ConsumerConfiguration>> _consumerConfiguration;
@@ -23,7 +24,7 @@ public sealed class AsyncEventConsumer<TEvent>: IEventConsumer
         var rabbitConfig = _consumerConfiguration.Value;
         var config = rabbitConfig.FirstOrDefault(
             c =>
-                c.EventType.Equals(typeof(TEvent).Name));
+                c.EventName.Equals(typeof(TEvent).Name) && c.EventHandlerName.Equals(typeof(THandler).Name));
         var bindings = config.Bindings.Select(configBinding => configBinding.Arguments).ToList();
         return new ConsumerQueueAndExchangeConfiguration()
         {
