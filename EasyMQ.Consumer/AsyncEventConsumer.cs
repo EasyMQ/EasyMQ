@@ -22,6 +22,8 @@ public sealed class AsyncEventConsumer<TEvent, THandler>: IEventConsumer
     public ConsumerQueueAndExchangeConfiguration GetQueueAndExchangeConfiguration()
     {
         var rabbitConfig = _consumerConfiguration.Value;
+        rabbitConfig.ForEach(c => c.Validate());
+        
         var config = rabbitConfig.FirstOrDefault(
             c =>
                 c.EventName.Equals(typeof(TEvent).Name) && c.EventHandlerName.Equals(typeof(THandler).Name));

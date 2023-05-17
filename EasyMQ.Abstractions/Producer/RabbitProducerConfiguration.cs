@@ -1,3 +1,5 @@
+using CommunityToolkit.Diagnostics;
+
 namespace EasyMQ.Abstractions.Producer;
 
 public class RabbitProducerConfiguration
@@ -9,4 +11,10 @@ public class RabbitProducerConfiguration
     public bool IsDurable { get; set; }
     public bool ExchangeAutoDelete { get; set; }
     public string RoutingKey { get; set; }
+
+    public void Validate()
+    {
+        Guard.IsNotNullOrEmpty(EventName);
+        Guard.IsNotNullOrEmpty(ExchangeType);
+    }
 }

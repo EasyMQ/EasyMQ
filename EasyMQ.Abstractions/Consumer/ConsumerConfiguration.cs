@@ -1,3 +1,5 @@
+using CommunityToolkit.Diagnostics;
+
 namespace EasyMQ.Abstractions.Consumer;
 
 public class ConsumerConfiguration
@@ -20,6 +22,13 @@ public class ConsumerConfiguration
     public bool QueueAutoDelete { get; set; }
     public bool ExchangeAutoDelete { get; set; }
     public string RoutingKey { get; set; } = string.Empty;
+
+    public void Validate()
+    {
+        Guard.IsNotNullOrEmpty(EventName);
+        Guard.IsNotNullOrEmpty(EventHandlerName);
+        Guard.IsNotNullOrEmpty(QueueName);
+    }
 }
 public class Binding
 {

@@ -40,7 +40,8 @@ public class EventConsumerTests
             new ConsumerConfiguration()
             {
                 EventName = "TestEvent",
-                EventHandlerName = "TestHandler"
+                EventHandlerName = "TestHandler",
+                QueueName = "test_q"
             }
         });
         _consumer = new AsyncEventConsumer<TestEvent, TestHandler>(handlerFactory, _consumerConfigs);

@@ -3,6 +3,7 @@ using EasyMQ.Abstractions.Producer;
 using EasyMQ.Consumer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 namespace EasyMQ.Extensions.DependencyInjection;

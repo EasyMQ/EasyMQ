@@ -33,6 +33,7 @@ public sealed class AsyncEventPublisher<TEvent> : IEventProducer<TEvent>, IEvent
     public RabbitProducerConfiguration GetProducerExchangeConfiguration(
         List<RabbitProducerConfiguration> rabbitProducerConfigurations)
     {
+        rabbitProducerConfigurations.ForEach(p => p.Validate());
         var config = rabbitProducerConfigurations.FirstOrDefault(
             c =>
                 c.EventName.Equals(typeof(TEvent).Name));
