@@ -23,7 +23,7 @@ class TestHandler : IEventHandler<EventConsumerTests.TestEvent>
 public class EventConsumerTests
 {
     private readonly IEventHandler<TestEvent> _eventHandler;
-    private readonly IOptions<List<ConsumerConfiguration>> _consumerConfigs;
+    private readonly IOptions<List<RabbitConsumerConfiguration>> _consumerConfigs;
     private readonly AsyncEventConsumer<TestEvent, TestHandler> _consumer;
 
     public class TestEvent : IEvent
@@ -35,9 +35,9 @@ public class EventConsumerTests
     {
         _eventHandler = Substitute.For<IEventHandler<TestEvent>>();
         var handlerFactory = () => _eventHandler;
-        _consumerConfigs = Options.Create(new List<ConsumerConfiguration>()
+        _consumerConfigs = Options.Create(new List<RabbitConsumerConfiguration>()
         {
-            new ConsumerConfiguration()
+            new RabbitConsumerConfiguration()
             {
                 EventName = "TestEvent",
                 EventHandlerName = "TestHandler",

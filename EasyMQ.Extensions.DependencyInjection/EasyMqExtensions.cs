@@ -26,7 +26,7 @@ public static class EasyMqExtensions
         var builder = new EasyMqConfigurationBuilder();
         setup(builder);
         _ = builder.GetConsumerSection() != string.Empty
-            ? services.Configure<List<ConsumerConfiguration>>(configuration.GetSection(builder.GetConsumerSection()))
+            ? services.Configure<List<RabbitConsumerConfiguration>>(configuration.GetSection(builder.GetConsumerSection()))
             : null;
         _ = builder.GetProducerSection() != string.Empty
             ? services.Configure<List<RabbitProducerConfiguration>>(configuration.GetSection(builder.GetProducerSection()))

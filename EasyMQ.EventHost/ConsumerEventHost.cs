@@ -135,7 +135,7 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
         return channel;
     }
     
-    private void ConfigureExchangeAndQueues(ConsumerQueueAndExchangeConfiguration config, IModel channel)
+    private void ConfigureExchangeAndQueues(ConsumerConfiguration config, IModel channel)
     {
         _logger.LogInformation("{Object}", JsonConvert.SerializeObject(config));
         if (config.ShouldDeclareQueue)

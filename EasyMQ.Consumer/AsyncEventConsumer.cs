@@ -11,15 +11,15 @@ public sealed class AsyncEventConsumer<TEvent, THandler>: IEventConsumer
     where THandler: IEventHandler<TEvent>
 {
     private readonly Func<IEventHandler<TEvent>> _handlerFactory;
-    private readonly IOptions<List<ConsumerConfiguration>> _consumerConfiguration;
+    private readonly IOptions<List<RabbitConsumerConfiguration>> _consumerConfiguration;
 
     public AsyncEventConsumer(Func<IEventHandler<TEvent>> handlerFactory,
-        IOptions<List<ConsumerConfiguration>> consumerConfiguration)
+        IOptions<List<RabbitConsumerConfiguration>> consumerConfiguration)
     {
         _handlerFactory = handlerFactory;
         _consumerConfiguration = consumerConfiguration;
     }
-    public ConsumerQueueAndExchangeConfiguration GetQueueAndExchangeConfiguration()
+    public ConsumerConfiguration GetQueueAndExchangeConfiguration()
     {
         var rabbitConfig = _consumerConfiguration.Value;
         rabbitConfig.ForEach(c => c.Validate());
@@ -28,7 +28,7 @@ public sealed class AsyncEventConsumer<TEvent, THandler>: IEventConsumer
             c =>
                 c.EventName.Equals(typeof(TEvent).Name) && c.EventHandlerName.Equals(typeof(THandler).Name));
         var bindings = config.Bindings.Select(configBinding => configBinding.Arguments).ToList();
-        return new ConsumerQueueAndExchangeConfiguration()
+        return new ConsumerConfiguration()
         {
             QueueName = config.QueueName,
             ExchangeName = config.ExchangeName,

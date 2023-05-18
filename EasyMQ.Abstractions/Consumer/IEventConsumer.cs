@@ -5,6 +5,6 @@ namespace EasyMQ.Abstractions.Consumer;
 /// </summary>
 public interface IEventConsumer
 {
-    ConsumerQueueAndExchangeConfiguration GetQueueAndExchangeConfiguration();
+    ConsumerConfiguration GetQueueAndExchangeConfiguration();
     Task ConsumeAsync(ReceiverContext context);
 }
