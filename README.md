@@ -1,5 +1,6 @@
 ## easyMQ
 [![dotnet](https://github.com/coderookie1994/easyMQ/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/coderookie1994/easyMQ/actions/workflows/dotnet.yml)
+[![codeql](https://github.com/coderookie1994/easyMQ/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/coderookie1994/easyMQ/actions/workflows/codeql.yml)
 
 A dead simple library which aims to simplify writing [RabbitMQ](https://www.rabbitmq.com/) code in [.NET Core](https://learn.microsoft.com/en-us/dotnet/core/introduction).
 
