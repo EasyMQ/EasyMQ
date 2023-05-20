@@ -19,7 +19,7 @@ public sealed class AsyncEventConsumer<TEvent, THandler>: IEventConsumer
         _handlerFactory = handlerFactory;
         _consumerConfiguration = consumerConfiguration;
     }
-    public ConsumerConfiguration GetQueueAndExchangeConfiguration()
+    public ConsumerConfiguration GetConsumerConfiguration()
     {
         var rabbitConfig = _consumerConfiguration.Value;
         rabbitConfig.ForEach(c => c.Validate());
