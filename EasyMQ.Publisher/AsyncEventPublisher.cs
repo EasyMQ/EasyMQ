@@ -10,11 +10,10 @@ using RabbitMQ.Client;
 namespace EasyMQ.Publisher;
 
 /// <summary>
-/// Bootstraps a publisher using <see cref="IEventProducer{TEvent}"/>
-/// To be used with <see cref="IEventPublisher{TEvent}"/> for publishing events.
+/// Bootstraps a publisher <see cref="IEventPublisher{TEvent}"/>
 /// </summary>
 /// <typeparam name="TEvent"></typeparam>
-public sealed class AsyncEventPublisher<TEvent> : IEventProducer<TEvent>, IEventPublisher<TEvent>
+public sealed class AsyncEventPublisher<TEvent> : IEventPublisher<TEvent>
     where TEvent : IEvent
 {
     private readonly ILogger<AsyncEventPublisher<TEvent>> _logger;
@@ -54,7 +53,7 @@ public sealed class AsyncEventPublisher<TEvent> : IEventProducer<TEvent>, IEvent
                 basicProperties = channel.CreateBasicProperties();
                 basicProperties.Headers = context.Headers;
             }
-            channel.BasicPublish(_producerConfig.ExchangeName, context.RoutingKey, context.Mandatory, basicProperties,
+            channel.BasicPublish(_producerConfig.ExchangeName, _producerConfig.RoutingKey, context.Mandatory, basicProperties,
                 Encoding.UTF8.GetBytes(JsonSerializer.Serialize(@event)));
         }
         catch (Exception e)

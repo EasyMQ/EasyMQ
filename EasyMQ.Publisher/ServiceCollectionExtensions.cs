@@ -11,8 +11,6 @@ public static class ServiceCollectionExtensions
         where TEvent : class, IEvent, new()
     {
         services.AddTransient<AsyncEventPublisher<TEvent>>();
-        services.AddTransient<IEventProducer<TEvent>>(sp =>
-            sp.GetRequiredService<AsyncEventPublisher<TEvent>>());
         services.AddTransient<IEventPublisher<TEvent>>(sp =>
             sp.GetRequiredService<AsyncEventPublisher<TEvent>>());
         return services;
