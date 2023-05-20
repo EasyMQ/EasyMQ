@@ -50,7 +50,7 @@ public class EventConsumerTests
     [Fact]
     public void GivenAnEvent_ShouldGetRequisiteConfigurations()
     {
-        _consumer.GetQueueAndExchangeConfiguration().Should().NotBeNull();
+        _consumer.GetConsumerConfiguration().Should().NotBeNull();
     }
 
     [Fact]

@@ -47,7 +47,7 @@ public class HeaderEndToEndTests: Fixture
             return Task.CompletedTask;
         });
         
-        Thread.Sleep(500);
+        Thread.Sleep(800);
         
         await Then<IFakeLogger>(i =>
         {
@@ -72,7 +72,7 @@ public class HeaderEndToEndTests: Fixture
             return Task.CompletedTask;
         });
         
-        Thread.Sleep(500);
+        Thread.Sleep(800);
         
         await Then<IFakeLogger>(i =>
         {

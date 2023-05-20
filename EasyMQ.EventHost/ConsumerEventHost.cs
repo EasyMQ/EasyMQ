@@ -61,7 +61,7 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
         IModel channel;
         try
         {
-            var config = _consumer.GetQueueAndExchangeConfiguration();
+            var config = _consumer.GetConsumerConfiguration();
                 
             channel = connection.CreateModel();
             ConfigureExchangeAndQueues(config, channel);
