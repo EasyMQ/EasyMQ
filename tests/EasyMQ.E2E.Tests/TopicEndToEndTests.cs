@@ -1,10 +1,13 @@
 using System;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyMQ.Abstractions.Producer;
 using EasyMQ.Consumer;
 using EasyMQ.Consumers;
 using EasyMQ.E2E.Tests.TestHandlers;
+using EasyMQ.EventHost.Abstractions;
 using EasyMQ.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,8 +42,7 @@ public class TopicEndToEndTests: Fixture
         await Given<IEventPublisher<TopicEvent>>(async i =>
         {
             await i.PublishAsync(new TopicEvent() {EventName = "test"},
-                new ProducerContext() {RoutingKey = "test", Mandatory = false});
-            // i.Publish(new TopicEvent() {EventName = "test"}, new ProducerContext() {RoutingKey = "test2"});
+                new ProducerContext() {Mandatory = false});
         });
         
         Thread.Sleep(500);
@@ -55,11 +57,16 @@ public class TopicEndToEndTests: Fixture
     [Fact]
     public async Task ForATopicEvent_WhenIPublishAnEventWithTwoRoutingKeys_BothTopicEventHandlersShouldGetInvoked()
     {
-        await Given<IEventPublisher<TopicEvent>>(async i =>
+        await Given<IConnectionProvider>(i =>
         {
-            await i.PublishAsync(new TopicEvent() {EventName = "test"},
-                new ProducerContext() {RoutingKey = "test", Mandatory = false});
-            await i.PublishAsync(new TopicEvent() {EventName = "test"}, new ProducerContext() {RoutingKey = "test2"});
+            var conn = i.AcquireProducerConnection();
+            using var channel = conn.CreateModel();
+            channel.BasicPublish("topic.tx", "test", false, null,
+                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new TopicEvent() {EventName = "test"})));
+            channel.BasicPublish("topic.tx", "test2", false, null,
+                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new TopicEvent() {EventName = "test"})));
+            
+            return Task.CompletedTask;
         });
         
         Thread.Sleep(500);
@@ -75,10 +82,14 @@ public class TopicEndToEndTests: Fixture
     [Fact]
     public async Task ForATopicEvent_WhenIPublishAnEventWithAnUnknownRoutingKey_TheTopicEventHandlerShouldNotGetInvoked()
     {
-        await Given<IEventPublisher<TopicEvent>>(async i =>
+        await Given<IConnectionProvider>(i =>
         {
-            await i.PublishAsync(new TopicEvent() {EventName = "test"},
-                new ProducerContext() {RoutingKey = "not_test", Mandatory = false});
+            var conn = i.AcquireProducerConnection();
+            using var channel = conn.CreateModel();
+            channel.BasicPublish("topic.tx", "unknown_routing_key", false, null,
+                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new TopicEvent() {EventName = "test"})));
+
+            return Task.CompletedTask;
         });
         
         Thread.Sleep(500);
