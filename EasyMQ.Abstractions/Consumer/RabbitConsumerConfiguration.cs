@@ -22,15 +22,43 @@ public class RabbitConsumerConfiguration
     public bool QueueAutoDelete { get; set; }
     public bool ExchangeAutoDelete { get; set; }
     public string RoutingKey { get; set; } = string.Empty;
+    public RetryPolicy RetryPolicy { get; set; }
 
     public void Validate()
     {
         Guard.IsNotNullOrEmpty(EventName);
         Guard.IsNotNullOrEmpty(EventHandlerName);
         Guard.IsNotNullOrEmpty(QueueName);
+        if (RetryPolicy is not null)
+        {
+            Guard.IsNotNull(RetryPolicy.RetryType);
+        }
     }
 }
 public class Binding
 {
     public Dictionary<string, dynamic> Arguments { get; set; }
+}
+
+public class RetryPolicy
+{
+    public RetryType? RetryType;
+    public int RetryNumberOfTimes { get; set; }
+    
+}
+
+public enum RetryType
+{
+    Immediate,
+    Delayed
+}
+
+public class Backoff
+{
+    public BackoffType Type;
+}
+
+public enum BackoffType
+{
+    Fib
 }
