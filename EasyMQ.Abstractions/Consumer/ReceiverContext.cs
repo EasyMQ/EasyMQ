@@ -9,13 +9,16 @@ public class ReceiverContext
     public string Exchange { get; private set; }
     public string ConsumerTag { get; private set; }
     public bool Redelivered { get; private set; }
+    public IDictionary<string, object> Headers { get; private set; }
+
     public ReceiverContext(byte[] body, 
         string routingKey, 
         ushort bodySize,
         ulong deliveryTag,
         string exchange,
         string consumerTag,
-        bool redelivered)
+        bool redelivered,
+        IDictionary<string, object> headers)
     {
         DeliveryTag = deliveryTag;
         Body = body;
@@ -24,5 +27,6 @@ public class ReceiverContext
         Exchange = exchange;
         ConsumerTag = consumerTag;
         Redelivered = redelivered;
+        Headers = headers;
     }
 }

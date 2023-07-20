@@ -31,7 +31,7 @@ public class EasyMqTimedProducerService: IHostedService
                 }, new ProducerContext()
                 {
                     Mandatory = false,
-                }).GetAwaiter().GetResult();
+                });
             };
         }
 
@@ -53,8 +53,8 @@ public class EasyMqTimedProducerService: IHostedService
             };
         }
 
-        _topicProducer = new Timer(Callback(), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(500));
-        _headerProducer = new Timer(HeaderCallback(), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(200));
+        _topicProducer = new Timer(Callback(), null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+        _headerProducer = new Timer(HeaderCallback(), null, TimeSpan.Zero, TimeSpan.FromSeconds(3));
         return Task.CompletedTask;
     }
 
