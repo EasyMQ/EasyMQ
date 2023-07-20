@@ -29,36 +29,10 @@ public class RabbitConsumerConfiguration
         Guard.IsNotNullOrEmpty(EventName);
         Guard.IsNotNullOrEmpty(EventHandlerName);
         Guard.IsNotNullOrEmpty(QueueName);
+        Console.WriteLine(RetryPolicy);
         if (RetryPolicy is not null)
         {
             Guard.IsNotNull(RetryPolicy.RetryType);
         }
     }
-}
-public class Binding
-{
-    public Dictionary<string, dynamic> Arguments { get; set; }
-}
-
-public class RetryPolicy
-{
-    public RetryType? RetryType;
-    public int RetryNumberOfTimes { get; set; }
-    
-}
-
-public enum RetryType
-{
-    Immediate,
-    Delayed
-}
-
-public class Backoff
-{
-    public BackoffType Type;
-}
-
-public enum BackoffType
-{
-    Fib
 }

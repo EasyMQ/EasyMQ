@@ -58,3 +58,11 @@ public class EasyMqTopicEventHandler2 : IEventHandler<EasyMqTopicEvent>
         return Task.CompletedTask;
     }
 }
+
+public class EasyMqTopicEventErrorHandler : IEventHandler<EasyMqTopicEvent>
+{
+    public Task Handle(ReceiverContext receiverContext, EasyMqTopicEvent @event)
+    {
+        throw new NotImplementedException();
+    }
+}

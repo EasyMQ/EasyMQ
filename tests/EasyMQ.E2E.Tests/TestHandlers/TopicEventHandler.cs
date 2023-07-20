@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 using EasyMQ.Abstractions;
 using EasyMQ.Abstractions.Consumer;
 using Microsoft.Extensions.Logging;
@@ -38,5 +39,20 @@ public class TopicEventHandler2 : IEventHandler<TopicEvent>
     {
         _logger.Log(@event.EventName);
         return Task.CompletedTask;
+    }
+}
+
+public class TestTopicErrorHandler : IEventHandler<TopicEvent>
+{
+    private IFakeLogger _logger;
+
+    public TestTopicErrorHandler(IFakeLogger logger)
+    {
+        _logger = logger;
+    }
+    public Task Handle(ReceiverContext receiverContext, TopicEvent @event)
+    {
+        _logger.Log(@event.EventName);
+        throw new NotImplementedException();
     }
 }

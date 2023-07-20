@@ -1,25 +1,31 @@
 ﻿using EasyMQ.Abstractions;
 using EasyMQ.Abstractions.Consumer;
 using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 namespace EasyMQ.Consumers;
 
-public sealed class ResilientEventConsumer<TEvent, THandler> : IEventConsumer
+public sealed class ResilientAsyncEventConsumer<TEvent, THandler> : IEventConsumer
     where TEvent : class, IEvent, new()
     where THandler : IEventHandler<TEvent>
 {
     private Func<IEventHandler<TEvent>> _handlerFactory;
     private IOptions<List<RabbitConsumerConfiguration>> _consumerConfiguration;
+    private RabbitConsumerConfiguration _configuration;
 
-    public ResilientEventConsumer(Func<IEventHandler<TEvent>> handlerFactory,
+    public ResilientAsyncEventConsumer(Func<IEventHandler<TEvent>> handlerFactory,
         IOptions<List<RabbitConsumerConfiguration>> consumerConfiguration)
     {
         _handlerFactory = handlerFactory;
         _consumerConfiguration = consumerConfiguration;
     }
-    public Task ConsumeAsync(ReceiverContext context)
+    public async Task ConsumeAsync(ReceiverContext context)
     {
-        throw new NotImplementedException();
+        var eventHandler = _handlerFactory();
+        var newEvent = JsonSerializer.Deserialize<TEvent>(context.Body.AsSpan(0, context.BodySize));
+        await eventHandler.BeforeHandle(context, newEvent);
+        await eventHandler.Handle(context, newEvent);
+        await eventHandler.PostHandle(context, newEvent);
     }
 
     public ConsumerConfiguration GetConsumerConfiguration()
@@ -30,6 +36,7 @@ public sealed class ResilientEventConsumer<TEvent, THandler> : IEventConsumer
         var config = rabbitConfig.FirstOrDefault(
             c =>
                 c.EventName.Equals(typeof(TEvent).Name) && c.EventHandlerName.Equals(typeof(THandler).Name));
+        _configuration = config;
         var bindings = config.Bindings.Select(configBinding => configBinding.Arguments).ToList();
         return new ConsumerConfiguration()
         {
@@ -43,7 +50,8 @@ public sealed class ResilientEventConsumer<TEvent, THandler> : IEventConsumer
             QueueAutoDelete = config.QueueAutoDelete,
             ExchangeAutoDelete = config.ExchangeAutoDelete,
             ShouldDeclareExchange = config.ShouldDeclareExchange,
-            ShouldDeclareQueue = config.ShouldDeclareQueue
+            ShouldDeclareQueue = config.ShouldDeclareQueue,
+            RetryPolicy = config.RetryPolicy
         };
     }
 }

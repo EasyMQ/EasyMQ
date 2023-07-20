@@ -31,6 +31,7 @@ await Host.CreateDefaultBuilder(args)
             })
             .AddEventConsumer<EasyMqTopicEvent, EasyMqTopicEventHandler>()
             .AddEventConsumer<EasyMqTopicEvent, EasyMqTopicEventHandler2>()
+            .AddResilientEventConsumer<EasyMqTopicEvent, EasyMqTopicEventErrorHandler>()
             .AddEventProducer<EasyMqTopicEvent>()
             .AddEventConsumer<EasyMqHeaderEvent, EasyMqHeaderEventHandler>()
             .AddEventProducer<EasyMqHeaderEvent>();

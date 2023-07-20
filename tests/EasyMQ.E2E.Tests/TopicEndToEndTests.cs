@@ -27,6 +27,7 @@ public class TopicEndToEndTests: Fixture
         services
             .AddEventConsumer<TopicEvent, TopicEventHandler>()
             .AddEventConsumer<TopicEvent, TopicEventHandler2>()
+            .AddResilientEventConsumer<TopicEvent, TestTopicErrorHandler>()
             .AddEventProducer<TopicEvent>()
             .AddSingleton(_topicLogger)
             .AddTransient<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler>>>>(sp =>
