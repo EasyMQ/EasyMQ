@@ -2,7 +2,6 @@
 
 public class RetryPolicy
 {
-    public RetryType RetryType;
+    public string Type { get; set; }
     public int RetryNumberOfTimes { get; set; }
-    
 }

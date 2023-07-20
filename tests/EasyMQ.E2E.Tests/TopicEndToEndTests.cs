@@ -27,13 +27,18 @@ public class TopicEndToEndTests: Fixture
         services
             .AddEventConsumer<TopicEvent, TopicEventHandler>()
             .AddEventConsumer<TopicEvent, TopicEventHandler2>()
-            .AddResilientEventConsumer<TopicEvent, TestTopicErrorHandler>()
+            .AddResilientEventConsumer<RetryTopicEvent, TestTopicErrorHandler>()
+            .AddResilientEventConsumer<DelayedRetryEvent, DelayedRetryTopicErrorHandler>()
             .AddEventProducer<TopicEvent>()
             .AddSingleton(_topicLogger)
-            .AddTransient<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler>>>>(sp =>
+            .AddTransient(sp =>
                 Substitute.For<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler>>>>())
-            .AddTransient<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler2>>>>(sp =>
-                Substitute.For<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler2>>>>());
+            .AddTransient(sp =>
+                Substitute.For<ILogger<ConsumerEventHost<AsyncEventConsumer<TopicEvent, TopicEventHandler2>>>>())
+            .AddTransient(sp =>
+                Substitute.For<ILogger<ResilientConsumerEventHost<ResilientAsyncEventConsumer<RetryTopicEvent, TestTopicErrorHandler>>>>())
+            .AddTransient(sp =>
+                Substitute.For<ILogger<ResilientConsumerEventHost<ResilientAsyncEventConsumer<DelayedRetryEvent, DelayedRetryTopicErrorHandler>>>>());
         
         base.AddServices(services, configurationRoot);
     }
@@ -98,6 +103,50 @@ public class TopicEndToEndTests: Fixture
         await Then<IFakeLogger>(i =>
         {
             i.DidNotReceive().Log(Arg.Any<string>());
+            i.ClearReceivedCalls();
+            return Task.CompletedTask;
+        });
+    }
+
+    [Fact]
+    public async Task ForATopicEvent_WhenConsumingCausesAnException_TheMessagedShouldBeRetriedImmediately()
+    {
+        await Given<IConnectionProvider>(i =>
+        {
+            var conn = i.AcquireProducerConnection();
+            using var channel = conn.CreateModel();
+            channel.BasicPublish("retry.tx", "retry", false, null, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new TopicEvent() { EventName = "err_test" })));
+
+            return Task.CompletedTask;
+        });
+
+        Thread.Sleep(TimeSpan.FromSeconds(10));
+
+        await Then<IFakeLogger>(i =>
+        {
+            i.Received(6).Log(Arg.Any<string>());
+            i.ClearReceivedCalls();
+            return Task.CompletedTask;
+        });
+    }
+
+    [Fact]
+    public async Task ForATopicEventConfiguredWithDelayedRetries_WhenConsumingCausesAnException_TheMessageShouldBeRetriedExponentially()
+    {
+        await Given<IConnectionProvider>(i =>
+        {
+            var conn = i.AcquireProducerConnection();
+            using var channel = conn.CreateModel();
+            channel.BasicPublish("delayed.retry.tx", "retry", false, null, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new DelayedRetryEvent() { EventName = "err_test" })));
+
+            return Task.CompletedTask;
+        });
+
+        Thread.Sleep(TimeSpan.FromSeconds(10));
+
+        await Then<IFakeLogger>(i =>
+        {
+            i.Received(4).Log(Arg.Any<string>());
             i.ClearReceivedCalls();
             return Task.CompletedTask;
         });

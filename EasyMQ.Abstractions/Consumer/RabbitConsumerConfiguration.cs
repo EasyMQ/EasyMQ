@@ -32,7 +32,7 @@ public class RabbitConsumerConfiguration
         Console.WriteLine(RetryPolicy);
         if (RetryPolicy is not null)
         {
-            Guard.IsNotNull(RetryPolicy.RetryType);
+            Guard.IsNotNull(RetryPolicy.Type);
         }
     }
 }

@@ -21,29 +21,49 @@ namespace EasyMQ.Consumer
 
         public void ApplyPolicy(ConsumerConfiguration config, RabbitMQ.Client.Events.BasicDeliverEventArgs args)
         {
-            switch (_retryPolicy.RetryType)
+            switch (_retryPolicy.Type)
             {
                 case RetryType.Immediate:
-
-                    var connection = _connectionProvider.AcquireProducerConnection();
-                    using(var channel = connection.CreateModel())
                     {
-                        if (args.BasicProperties.Headers is null)
+                        var connection = _connectionProvider.AcquireProducerConnection();
+                        using (var channel = connection.CreateModel())
                         {
-                            args.BasicProperties.Headers = new Dictionary<string, object>();
+                            var newBasicProps = channel.CreateBasicProperties();
+                            newBasicProps.Headers = new Dictionary<string, object>();
+                            if (args.BasicProperties.Headers is not null && args.BasicProperties.Headers.ContainsKey("x-retries"))
+                            {
+                                args.BasicProperties.Headers.TryGetValue("x-retries", out var retries);
+                                newBasicProps.Headers.Add("x-retries", (int)retries + 1);
+                            }
+                            else
+                            {
+                                newBasicProps.Headers.Add("x-retries", 1);
+                                newBasicProps.Headers.Add("x-delay", 1);
+                            }
+                            channel.BasicPublish($"{config.ExchangeName}.immediate.retry", config.QueueName, false, newBasicProps, args.Body);
                         }
-                        if (args.BasicProperties.Headers.ContainsKey("x-retries"))
+                    }
+                    break;
+                case RetryType.Delayed:
+                    {
+                        var connection = _connectionProvider.AcquireProducerConnection();
+                        using (var channel = connection.CreateModel())
                         {
-                            args.BasicProperties.Headers.TryGetValue("x-retries", out var retries);
-                            args.BasicProperties.Headers.Remove("x-retries");
-                            args.BasicProperties.Headers.Add("x-retries", (int)retries + 1);
+                            var newBasicProps = channel.CreateBasicProperties();
+                            newBasicProps.Headers = new Dictionary<string, object>();
+                            if (args.BasicProperties.Headers is not null && args.BasicProperties.Headers.ContainsKey("x-retries"))
+                            {
+                                args.BasicProperties.Headers.TryGetValue("x-retries", out var retries);
+                                newBasicProps.Headers.Add("x-retries", (int)retries + 1);
+                                newBasicProps.Headers.Add("x-delay", Math.Pow(2, (int)retries + 1));
+                            }
+                            else
+                            {
+                                newBasicProps.Headers.Add("x-retries", 1);
+                                newBasicProps.Headers.Add("x-delay", Math.Pow(2, 0));
+                            }
+                            channel.BasicPublish($"{config.ExchangeName}.delayed.retry", config.QueueName, false, newBasicProps, args.Body);
                         }
-                        else
-                        {
-                            args.BasicProperties.Headers.Add("x-retries", 1);
-                            args.BasicProperties.Headers.Add("x-delay", 1000);
-                        }
-                        channel.BasicPublish($"{config.ExchangeName}.immediate.retry", config.QueueName, false, args.BasicProperties, args.Body);
                     }
                     break;
             }

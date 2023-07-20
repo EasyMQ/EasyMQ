@@ -1,7 +1,7 @@
 ﻿namespace EasyMQ.Abstractions.Consumer;
 
-public enum RetryType
+public static class RetryType
 {
-    Immediate,
-    Delayed
+    public const string Immediate = "Immediate";
+    public const string Delayed = "Delayed";
 }

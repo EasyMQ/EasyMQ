@@ -92,7 +92,8 @@ namespace EasyMQ.Consumer
                                 args.DeliveryTag,
                                 args.Exchange,
                                 args.ConsumerTag,
-                                args.Redelivered));
+                                args.Redelivered,
+                                args.BasicProperties.Headers));
                             channel.BasicAck(args.DeliveryTag, false);
                         }
                         catch (Exception e)
@@ -112,8 +113,7 @@ namespace EasyMQ.Consumer
                                     args.BasicProperties.Headers.TryGetValue("x-retries", out var retries);
                                     if ((int)retries == config.RetryPolicy.RetryNumberOfTimes)
                                     {
-                                        // no-op
-                                        //channel.BasicNack(args.DeliveryTag, false, false);
+                                        // no-op, since it has exhausted all retries
                                     }
                                     else
                                     {
@@ -202,7 +202,7 @@ namespace EasyMQ.Consumer
                 {
                     { "x-delayed-type", config.ExchangeType}
                 };
-                switch (config.RetryPolicy.RetryType)
+                switch (config.RetryPolicy.Type)
                 {
                     
                     case RetryType.Immediate:

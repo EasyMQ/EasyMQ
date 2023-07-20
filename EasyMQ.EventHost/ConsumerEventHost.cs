@@ -90,7 +90,8 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
                             args.DeliveryTag,
                             args.Exchange,
                             args.ConsumerTag,
-                            args.Redelivered));
+                            args.Redelivered,
+                            args.BasicProperties.Headers));
                         channel.BasicAck(args.DeliveryTag, false);
                     }
                     catch (Exception e)
