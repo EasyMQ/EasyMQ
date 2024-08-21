@@ -114,7 +114,7 @@ await Host.CreateDefaultBuilder(args)
   - [x] Consume from Topic Exchanges
   - [x] Consume from Header Exchanges
   - [x] Consume from Fanout Exchanges
-  - [ ] Consume from Direct Exchanges
+  - [x] Consume from Direct Exchanges
   - [ ] Consume from Default Exchange 
 - [x] Producer capabilities
 - [ ] Serialization Options
