@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35201.131
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.Abstractions", "EasyMQ.Abstractions\EasyMQ.Abstractions.csproj", "{ADB6AFB6-0C8A-4E4E-9170-67E2B67E93F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyMQ.EventHost", "EasyMQ.EventHost\EasyMQ.EventHost.csproj", "{BC1EC765-E946-446D-A73C-9C4DF48A346A}"
@@ -65,9 +68,15 @@ Global
 		{1582DA3D-AB78-4025-A874-8B37FEC23BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1582DA3D-AB78-4025-A874-8B37FEC23BB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E3122BD6-324F-4B87-87FF-2B2C1738EFA1} = {4308B068-6EA3-415A-B68C-CC342D011036}
 		{2119D4D2-8BBF-4508-B878-F9BB8D0A23DC} = {482CEC83-8BCD-4402-BF86-D805ABA0FF51}
 		{1582DA3D-AB78-4025-A874-8B37FEC23BB7} = {4308B068-6EA3-415A-B68C-CC342D011036}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4FE1BCFE-EF1A-4C16-BAE5-CC2958E348C1}
 	EndGlobalSection
 EndGlobal
