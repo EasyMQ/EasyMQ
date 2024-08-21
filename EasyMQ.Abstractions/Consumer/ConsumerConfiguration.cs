@@ -12,5 +12,5 @@ public class ConsumerConfiguration
     public bool IsExclusiveQueue { get; set; }
     public bool QueueAutoDelete { get; set; }
     public bool ExchangeAutoDelete { get; set; }
-    public string RoutingKey { get; set; }
+    public string RoutingKey { get; set; } = string.Empty;
 }

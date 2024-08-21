@@ -52,7 +52,7 @@ namespace EasyMQ.E2E.Tests
                 return Task.CompletedTask;
             });
 
-            Thread.Sleep(800);
+            Thread.Sleep(400);
 
             await Then<IFakeLogger>(i =>
             {

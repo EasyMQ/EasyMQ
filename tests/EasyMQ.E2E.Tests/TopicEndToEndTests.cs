@@ -45,7 +45,7 @@ public class TopicEndToEndTests: Fixture
                 new ProducerContext() {Mandatory = false});
         });
         
-        Thread.Sleep(800);
+        Thread.Sleep(400);
         
         await Then<IFakeLogger>(i =>
         {
@@ -69,7 +69,7 @@ public class TopicEndToEndTests: Fixture
             return Task.CompletedTask;
         });
         
-        Thread.Sleep(500);
+        Thread.Sleep(400);
         
         await Then<IFakeLogger>(i =>
         {
@@ -92,7 +92,7 @@ public class TopicEndToEndTests: Fixture
             return Task.CompletedTask;
         });
         
-        Thread.Sleep(500);
+        Thread.Sleep(400);
         
         await Then<IFakeLogger>(i =>
         {

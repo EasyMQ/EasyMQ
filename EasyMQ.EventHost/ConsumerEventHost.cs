@@ -148,6 +148,8 @@ public sealed class ConsumerEventHost<TConsumer> : IHostedService
             channel.QueueBind(config.QueueName, config.ExchangeName, config.RoutingKey);
         if (config.ExchangeType.Equals(ExchangeType.Fanout))
             channel.QueueBind(config.QueueName, config.ExchangeName, "");
+        if (config.ExchangeType.Equals(ExchangeType.Direct))
+            channel.QueueBind(config.QueueName, config.ExchangeName, config.RoutingKey);
 
         config.Bindings.ForEach(b => channel.QueueBind(config.QueueName, config.ExchangeName, config.RoutingKey, b));
     }
